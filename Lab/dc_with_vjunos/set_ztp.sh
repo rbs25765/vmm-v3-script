@@ -1,6 +1,6 @@
 #!/bin/bash
 
-Network configuration 
+Network configuration for ztp 
 
 cat << EOF  | sudo tee /etc/netplan/01-netcfg.yaml
 network:
