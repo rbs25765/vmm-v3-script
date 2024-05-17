@@ -180,6 +180,8 @@ node4|172.16.11.14/24|172.16.11.1|10.49.32.95|10.49.32.97
 ## Lab Exercise
 Now you can start exploring Juniper Paragon 2.0.0
 
+you can use the following [document](pa_2.0.0/LabExercise.md) as guideline 
+
 
 
 
