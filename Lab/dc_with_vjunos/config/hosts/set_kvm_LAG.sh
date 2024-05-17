@@ -14,7 +14,7 @@ network:
       - bond0
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:10:05
+      macaddress: 56:04:1b:00:6f:98
       mtu: 9000
       interfaces:
         - eth1

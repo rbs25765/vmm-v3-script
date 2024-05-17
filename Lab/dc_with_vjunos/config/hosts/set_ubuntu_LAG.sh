@@ -1,4 +1,4 @@
-sudo hostname svr6
+sudo hostname svr4
 hostname | sudo tee /etc/hostname
 cat << EOF | sudo tee /etc/netplan/01_net.yaml
 
@@ -10,13 +10,13 @@ network:
       dhcp4: no
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:26:61
+      macaddress: 56:04:1b:00:84:6b
       interfaces:
         - eth0
         - eth1
       parameters:
          mode: 802.3ad
-      addresses: [ 192.168.13.6/24, fc00:dead:beef:a013::1000:5/64]
+      addresses: [ 192.168.13.4/24, fc00:dead:beef:a013::1000:4/64]
       routes:
       - to: 0.0.0.0/0
         via: 192.168.13.254

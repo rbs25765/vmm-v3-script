@@ -74,14 +74,15 @@ EOF
 
 
 {% if vnc -%}
-cat << EOF | sudo tee /usr/local/bin/startup.sh
+cat << EOF | sudo tee /usr/local/bin/start_vnc.sh
 #!/bin/bash
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 {% for v in vnc -%}
 websockify -D --web=/usr/share/novnc/ {{vnc[v].port}} {{vnc[v].vnc_server}}
 {% endfor -%}
 exit 1
 EOF
+
+sudo chmod +x /usr/local/bin/start_vnc.sh
 
 cat << EOF | sudo tee /etc/update-motd.d/99-update
 #!/bin/bash

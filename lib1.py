@@ -1370,6 +1370,12 @@ def start(d1):
 		s1,s2,s3=ssh.exec_command(cmd1)
 		for i in s2.readlines():
 			print(i.rstrip())
+		cmd1 = check_disk2(d1)
+		if cmd1:
+			print("creating secondary disk")
+			s1,s2,s3=ssh.exec_command(cmd1)
+			for i in s2.readlines():
+				print(i.rstrip())
 		print("start configuration ")
 		create_esxi_disk(d1,ssh)
 		cmd1=f"vmm config {lab_conf} -g {param1.vmm_group}"
@@ -1386,6 +1392,20 @@ def start(d1):
 		
 	elif d1['pod']['type'] == 'kvm':
 		print("not yet implemented")
+
+# def check_disk2(d1):
+# 	d2 =[]
+# 	for i in d1['vm'].keys():
+# 		if d1['vm'][i]['os'] == 'pa2':
+# 			d2.append(f"qemu-img create -f qcow2 {i}_disk2.img 50G")
+# 	return d2
+def check_disk2(d1):
+	d2 =""
+	for i in d1['vm'].keys():
+		if d1['vm'][i]['os'] == 'pa2':
+			dsk2 = f"{d1['pod']['home_dir']}/vm/{d1['name']}/{i}_disk2.img"
+			d2 += f"qemu-img create -f vmdk {dsk2} 50G;"
+	return d2
 
 def upload(d1,upload_status=1):
 	if d1['pod']['type'] == 'vmm':
@@ -1457,14 +1477,22 @@ def create_lab_config(d1):
 		#print(param1.vm_type)
 		path1 = f"{d1['pod']['home_dir']}/vm/{d1['name']}/{i}.conf"
 		#print(f"path1 ")
+		dsk2 = f"{d1['pod']['home_dir']}/vm/{d1['name']}/{i}_disk2.img"
 		if not d2['vm']:
-			d2['vm']={i : { 'type': param1.vm_type[type], 'disk': dsk, 'install':path1, 'intf':{}}}
+			if d1['vm'][i]['os'] == 'pa2':
+				d2['vm']={i : { 'type': param1.vm_type[type], 'disk': dsk,'disk2': dsk2,  'install':path1, 'intf':{}}}
+			else:
+				d2['vm']={i : { 'type': param1.vm_type[type], 'disk': dsk, 'install':path1, 'intf':{}}}
 		else:
-			d2['vm'][i]={ 'type': param1.vm_type[type], 'disk': dsk, 'install':path1,'intf':{}}
+			if d1['vm'][i]['os'] == 'pa2':
+				d2['vm'][i]={ 'type': param1.vm_type[type], 'disk': dsk, 'disk2': dsk2,'install':path1,'intf':{}}
+			else:
+				d2['vm'][i]={ 'type': param1.vm_type[type], 'disk': dsk, 'install':path1,'intf':{}}
 		intf_list={}
 		#if d1['vm'][i]['type'] in param1.pc_type:
 		k = 0
 		#print(f"vm {i}")
+
 		if 'vnc' in d1['vm'][i].keys():
 			if d1['vm'][i]['vnc']:
 				d2['vm'][i].update({'vnc':True})
@@ -1701,6 +1729,8 @@ def get_ssh_user(d1,i):
 			retval="alpine"
 		elif d1['vm'][i]['os'] =='rhel':
 			retval="rhel"
+		elif d1['vm'][i]['os'] =='pa2':
+			retval="root"
 		else:
 			retval = 'admin'
 	return retval

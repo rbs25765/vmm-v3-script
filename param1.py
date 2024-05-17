@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 home_dir='/vmm/data/user_disks/'
 kvm_dir='/disk2/vm/'
-pc_type=['gw','pctiny','pcsmall','pcmedium','pcbig','pcxbig','pchpv1','pchpv2','bridge','cpe','paagent','ssrc','ssrr','aos','aos_ztp']
+pc_type=['gw','pctiny','pcsmall','pcmedium','pcbig','pcxbig','pchpv0','pchpv1','pchpv2','bridge','cpe','paagent','ssrc','ssrr','aos','aos_ztp']
 junos_template='junos.j2'
 junos_type=['vsrx','vmx','mx240','mx480','mx960','vjunos_switch','vjunos_router','vjunos_evolved']
 vm_type_old={
@@ -32,6 +32,7 @@ vm_type={
    'pcsmall': {'ncpus' : 2,'memory':8192,'setvar':'"+qemu_args" "-cpu qemu64,+vmx"'},
    'pcmedium': {'ncpus' : 2,'memory':16384,'setvar':'"+qemu_args" "-cpu qemu64,+vmx"'},
    'pcbig': {'ncpus' : 4,'memory':32768,'setvar':'"+qemu_args" "-cpu qemu64,+vmx"'},
+   'pchpv0': {'ncpus' : 16,'memory':32768,'setvar':'"+qemu_args" "-cpu host,+vmx"'},
    'pchpv1': {'ncpus' : 8,'memory':32768,'setvar':'"+qemu_args" "-cpu host,+vmx"'},
    'pchpv2': {'ncpus' : 4,'memory':16384,'setvar':'"+qemu_args" "-cpu host,+vmx"'},
    'pcxbig': {'ncpus' : 8,'memory':65536,'setvar':'"+qemu_args" "-cpu qemu64,+vmx"'},
@@ -53,7 +54,7 @@ vm_type={
    'mx960' : {'i2cid': 21}
 }
 # vm_os=['centos','ubuntu','vmx','vqfx','vsrx','evo','mx960','mx480','mx240','wrt']
-vm_os=['gw','alpine','centos','rhel','ubuntu','ubuntu2','debian','desktop','vmx','jspace','sdi',
+vm_os=['gw','alpine','centos','rhel','ubuntu','ubuntu2','debian','desktop','vmx','jspace','sdi','pa2',
        'vsrx','vjunos_switch','vjunos_router','vjunos_evolved','wrt','aos','aos_ztp','aos_flow','bridge','paagent','ssr']
 tmp_dir="./tmp/"
 vmm_group="vmm-default"

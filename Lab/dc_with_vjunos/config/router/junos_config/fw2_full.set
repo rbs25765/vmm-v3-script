@@ -135,8 +135,8 @@ set protocols bgp group to_dc2 export to_dc neighbor 10.1.101.40 peer-as 4200002
 set protocols bgp group to_dc2 export to_dc neighbor 10.1.101.42 peer-as 4200002002
 set protocols bgp group to_dc2 export to_dc neighbor fc00:dead:beef:ff01::40 peer-as 4200002001
 set protocols bgp group to_dc2 export to_dc neighbor fc00:dead:beef:ff01::40 family inet6 any
-set protocols bgp group to_dc2 export to_dc neighbor fc00:dead:beef:ff01::32 peer-as 4200002002
-set protocols bgp group to_dc2 export to_dc neighbor fc00:dead:beef:ff01::32 family inet6 any
+set protocols bgp group to_dc2 export to_dc neighbor fc00:dead:beef:ff01::42 peer-as 4200002002
+set protocols bgp group to_dc2 export to_dc neighbor fc00:dead:beef:ff01::42 family inet6 any
 
 set protocols lldp interface all
 set routing-options autonomous-system 4200009005

@@ -1,9 +1,5 @@
 #!/bin/bash
-<<<<<<< HEAD:Lab/dc_with_vEX/config/hosts/run_vm.sh
 VM=vm1
-=======
-VM=dhcp
->>>>>>> a8d6b43 (update):Lab/dc_with_vjunos/config/hosts/run_vm.sh
 DISK=${VM}.img
 CDROM=./seed_debian.iso
 virt-install --name ${VM} \
