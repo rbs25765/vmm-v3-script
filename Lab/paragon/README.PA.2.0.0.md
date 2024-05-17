@@ -80,23 +80,23 @@ you can copy the disk image from my home directory on VMM /vmm/data/user_disks/i
         ----------------------------------------------
         To access console of VM, use the following URL
         ----------------------------------------------
-        console node1 : http://172.16.10.254:6081/vnc.html
-        console node2 : http://172.16.10.254:6082/vnc.html
-        console node3 : http://172.16.10.254:6083/vnc.html
-        console node4 : http://172.16.10.254:6084/vnc.html
-        console client : http://172.16.10.254:6085/vnc.html
+        console node1 : http://10.53.102.243:6081/vnc.html
+        console node2 : http://10.53.102.243:6082/vnc.html
+        console node3 : http://10.53.102.243:6083/vnc.html
+        console node4 : http://10.53.102.243:6084/vnc.html
+        console client : http://10.53.102.243:6085/vnc.html
 
-2. open another ssh session with port forwarding to vnc port of each virtual appliance node
-
-        ssh -L 6081:127.0.0.1:6081 -L 6082:127.0.0.1:6082 -L 6083:127.0.0.1:6083 -L 6084:127.0.0.1:6084 gw
-
-3. on node **gw**, run the script to start web proxy to access the vnc port
+2. on node **gw**, run the script to start web proxy to access the vnc port
 
         /usr/local/bin/start_vnc.sh
 
-4. To configure node1, on web browser of your workstation open session to 127.0.0.1
+3. To configure node1, on web browser of your workstation open session to url of node1
 
-        http://127.0.0.1:6081/vnc.html
+        http://10.53.102.243:6081/vnc.html
+
+     ![connect_to_vnc.jpg](images/connect_to_vnc.jpg)
+     
+4. Click connect to open VNC connection to node1
 
 5. Set the password, hostname, and ip address of node1
 
@@ -181,12 +181,5 @@ node4|172.16.11.14/24|172.16.11.1|10.49.32.95|10.49.32.97
 Now you can start exploring Juniper Paragon 2.0.0
 
 you can use the following [document](pa_2.0.0/LabExercise.md) as guideline 
-
-
-
-
-
-
-
 
 

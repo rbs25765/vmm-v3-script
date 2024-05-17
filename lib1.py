@@ -384,13 +384,13 @@ def add_path(d1,path):
 		'ssh_config': f"{path}/template/ssh_config.j2"
 	}
 
-def get_private_ip_gw(d1):
-	for i in d1['vm'].keys():
-		if d1['vm'][i]['type']=="gw":
-			for j in d1['vm'][i]['interfaces'].keys():
-				if d1['vm'][i]['interfaces'][j]['bridge']=="mgmt":
-					retval= d1['vm'][i]['interfaces'][j]['family']['inet'].split("/")[0]
-	return retval
+# def get_private_ip_gw(d1):
+# 	for i in d1['vm'].keys():
+# 		if d1['vm'][i]['type']=="gw":
+# 			for j in d1['vm'][i]['interfaces'].keys():
+# 				if d1['vm'][i]['interfaces'][j]['bridge']=="mgmt":
+# 					retval= d1['vm'][i]['interfaces'][j]['family']['inet'].split("/")[0]
+# 	return retval
 
 def print_syntax():
 	print("usage : vmm.py <command>")
@@ -753,7 +753,13 @@ def get_dhcp_config(d1):
 			})
 	retval['net'] = get_net_config_gw(d1)
 	retval['vnc'] = create_novnc(d1)
-	retval['ip_gw'] = d1['vm']['gw']['interfaces']['em1']['family']['inet'].split('/')[0]
+	# cmd1 = "ip addr show dev eth0 | grep 'inet ' | tr -s ' ' | cut -f 3 -d ' ' | cut -f 1 -d '/'"
+	# ssh=sshconnect(d1)
+	# _,stdout,_=ssh.exec_command(cmd1)
+	# j = stdout.readlines()
+	#print(f"value of j {j}")
+	#retval['ip_gw'] = d1['vm']['gw']['interfaces']['em1']['family']['inet'].split('/')[0]
+	retval['ip_gw'] = get_ip_vm(d1,'gw')
 	retval['ssh_key_pub'] = d1['pod']['ssh_key_host']
 	retval['ssh_key_priv'] = d1['pod']['ssh_key_host_priv']
 
