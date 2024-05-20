@@ -34,7 +34,7 @@ paragon {
     }
 }
 
-
+configure
 set paragon cluster nodes kubernetes 1 address 172.16.11.11
 set paragon cluster nodes kubernetes 2 address 172.16.11.12
 set paragon cluster nodes kubernetes 3 address 172.16.11.13
@@ -43,7 +43,7 @@ set paragon cluster ntp ntp-servers ntp.juniper.net
 set paragon cluster common-services ingress ingress-vip 172.16.11.101
 set paragon cluster applications active-assurance test-agent-gateway-vip 172.16.11.102
 set paragon cluster applications web-ui web-admin-user irzan@juniper.net
-set paragon cluster applications web-ui web-admin-password 
+set paragon cluster applications web-ui web-admin-password J4k4rt4#01
 
 
 NTP : '10.49.32.95', '10.49.32.97'
