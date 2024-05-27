@@ -1,0 +1,126 @@
+group {
+  option tftp-server-name "172.16.10.3";
+  subnet 172.16.11.0 netmask 255.255.255.0 {
+    range  172.16.11.100 172.16.11.199;
+    option routers 172.16.11.1;
+  }
+  subnet 172.16.12.0 netmask 255.255.255.0 {
+    range  172.16.12.100 172.16.12.199;
+    option routers 172.16.12.1;
+  }
+  subnet 172.16.13.0 netmask 255.255.255.0 {
+    range  172.16.13.100 172.16.13.199;
+    option routers 172.16.13.1;
+  }
+  host dc1spine1 {
+    hardware ethernet 56:04:1b:00:44:b1;
+    option host-name "dc1spine1";
+    fixed-address 172.16.11.101;
+  }
+  host dc1spine2 {
+    hardware ethernet 56:04:1b:00:1e:bf;
+    option host-name "dc1spine2";
+    fixed-address 172.16.11.102;
+  }
+  host dc1spine3 {
+    hardware ethernet 56:04:1b:00:68:73;
+    option host-name "dc1spine3";
+    fixed-address 172.16.11.103;
+  }
+  host dc1spine4 {
+    hardware ethernet 56:04:1b:00:12:d4;
+    option host-name "dc1spine4";
+    fixed-address 172.16.11.104;
+  }
+  host dc1leaf1 {
+    hardware ethernet 56:04:1b:00:50:33;
+    option host-name "dc1leaf1";
+    fixed-address 172.16.11.111;
+  }
+  host dc1leaf2 {
+    hardware ethernet 56:04:1b:00:50:e0;
+    option host-name "dc1leaf2";
+    fixed-address 172.16.11.112;
+  }
+  host dc1leaf3 {
+    hardware ethernet 56:04:1b:00:59:34;
+    option host-name "dc1leaf3";
+    fixed-address 172.16.11.113;
+  }
+  host dc1leaf4 {
+    hardware ethernet 56:04:1b:00:3f:38;
+    option host-name "dc1leaf4";
+    fixed-address 172.16.11.114;
+  }
+  host dc1leaf5 {
+    hardware ethernet 56:04:1b:00:5b:de;
+    option host-name "dc1leaf5";
+    fixed-address 172.16.11.115;
+  }
+  host dc1leaf6 {
+    hardware ethernet 56:04:1b:00:63:12;
+    option host-name "dc1leaf6";
+    fixed-address 172.16.11.116;
+  }
+  host dc1leaf7 {
+    hardware ethernet 56:04:1b:00:35:fb;
+    option host-name "dc1leaf7";
+    fixed-address 172.16.11.117;
+  }
+  host dc1leaf8 {
+    hardware ethernet 56:04:1b:00:18:4b;
+    option host-name "dc1leaf8";
+    fixed-address 172.16.11.118;
+  }
+  host dc2sw1 {
+    hardware ethernet 56:04:1b:00:49:35;
+    option host-name "dc2sw1";
+    fixed-address 172.16.12.101;
+  }
+  host dc2sw2 {
+    hardware ethernet 56:04:1b:00:37:0d;
+    option host-name "dc2sw2";
+    fixed-address 172.16.12.102;
+  }
+  host dc3spine1 {
+    hardware ethernet 56:04:1b:00:4e:1e;
+    option host-name "dc3spine1";
+    fixed-address 172.16.13.101;
+  }
+  host dc3spine2 {
+    hardware ethernet 56:04:1b:00:7a:6e;
+    option host-name "dc3spine2";
+    fixed-address 172.16.13.102;
+  }
+  host dc3leaf1 {
+    hardware ethernet 56:04:1b:00:7b:7c;
+    option host-name "dc3leaf1";
+    fixed-address 172.16.13.111;
+  }
+  host dc3leaf2 {
+    hardware ethernet 56:04:1b:00:79:a8;
+    option host-name "dc3leaf2";
+    fixed-address 172.16.13.112;
+  }
+  host dc3leaf3 {
+    hardware ethernet 56:04:1b:00:5f:14;
+    option host-name "dc3leaf3";
+    fixed-address 172.16.13.113;
+  }
+  host dc3leaf4 {
+    hardware ethernet 56:04:1b:00:6c:8d;
+    option host-name "dc3leaf4";
+    fixed-address 172.16.13.114;
+  }
+  host dc3leaf5 {
+    hardware ethernet 56:04:1b:00:7a:10;
+    option host-name "dc3leaf5";
+    fixed-address 172.16.13.115;
+  }
+  host dc3leaf6 {
+    hardware ethernet 56:04:1b:00:6c:8c;
+    option host-name "dc3leaf6";
+    fixed-address 172.16.13.116;
+  }
+   
+}

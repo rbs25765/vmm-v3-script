@@ -109,7 +109,7 @@ There are different arguments required by this script
 ## Caution
 
 - when the script is used to start the topology, any existing running topology will be stopped and unbound. Please backup the existing topology if needed.
-- on one pod location, only one VMM topology can run. If you need to run multiple topology, then you need to run tthose topology on different VMM pod.
+- on one pod location, only one VMM topology can run. If you need to run multiple topology, then you need to run those topology on different VMM pod.
 
 ## Accessing the VMM Lab
 

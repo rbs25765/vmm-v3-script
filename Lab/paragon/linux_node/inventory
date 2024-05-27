@@ -1,9 +1,10 @@
 [all]
-control
+node4
 node1
 node2
 node3
 client
+gw
 # registry
 [all:vars]
 ansible_python_interpreter=python3

@@ -5,7 +5,7 @@ pod:
   #vmmserver: sv8-pod4-vmm.englab.juniper.net
   #jumpserver: ttsv-shell110.juniper.net
   vmmserver: q-pod27-vmm.englab.juniper.net
-  jumpserver: ttqc-shell001.juniper.net
+  #jumpserver: ttqc-shell001.juniper.net
   user: irzan
   #adpassword: ThisIsAnaMabokCoy
   home_dir : /vmm/data/user_disks/irzan

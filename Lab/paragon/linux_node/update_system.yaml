@@ -41,7 +41,7 @@
     - node1
     - node2
     - node3
-    - control
+    - node4
   become: yes
   become_method: sudo
   tasks:
@@ -71,10 +71,10 @@
     ansible.builtin.blockinfile:
       path: /etc/hosts
       block: |
-        172.16.11.2 node1
-        172.16.11.3 node2
-        172.16.11.4 node3
-        172.16.12.11 control
+        172.16.11.11 node1
+        172.16.11.12 node2
+        172.16.11.13 node3
+        172.16.11.14 node4
   - name: add into sysctl.conf
     ansible.builtin.blockinfile:
       path: /etc/sysctl.conf

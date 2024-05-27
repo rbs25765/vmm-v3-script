@@ -1756,7 +1756,7 @@ def upload_file_to_server(d1):
 	cmd1="rm -rf " + config_dir
 	#print("check directory ",vm_dir)
 	#print("command ",check_dir)
-	ssh.exec_command(check_dir)
+	#ssh.exec_command(check_dir)
 	print("deleting config_dir " , config_dir)
 	ssh.exec_command(cmd1)
 	sftp.mkdir(config_dir)

@@ -23,8 +23,10 @@ P5|10.100.1.15
 
         set routing-options static route 172.16.11.0/24 next-hop 172.16.14.0
         set policy-options policy-statement from_static term 1 from protocol static
+        set policy-options policy-statement from_static term 1 then accept
         set protocols isis export from_static
         set protocols isis export from_static
+
 
 4. Now from **node1**, it should be able to reach loopback for network devices
 

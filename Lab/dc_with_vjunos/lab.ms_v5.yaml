@@ -17,13 +17,16 @@ pod:
 images:
   gw: images/gw.qcow2
   ubuntu: images/ubuntu22.04.qcow2
-  vsrx: images/vsrx/junos-vsrx3-x86-64-23.4R1.9.qcow2
-  aos: images/apstra/aos_server_4.2.1.1-10.qcow2
-  aos_ztp: images/apstra/apstra-ztp-4.2.1-21.qcow2
-  aos_flow: images/apstra/apstra-flow-4.2.1-ubuntu-22.04-amd64-6.4.2.qcow2
+  vsrx: images/junos-vsrx3-x86-64-23.4R1.9.qcow2
+  #vsrx: /volume/download/docroot/software/vsrx3.0/23.4R1/junos-vsrx3-x86-64-23.4R1.9.qcow2
+  aos: images/aos_server_4.2.1.1-10.qcow2
+  aos_ztp: images/apstra-ztp-4.2.1-21.qcow2
+  aos_flow: images/apstra-flow-4.2.1-ubuntu-22.04-amd64-6.4.2.qcow2
   #vjunos_switch: images/vJunos-switch-23.4R1.10.qcow2
   vjunos_switch: images/vJunos-switch-23.2R1.14.qcow2
-  vjunos_evolved: images/vJunosEvolved-23.2R1-S1.8-EVO.qcow2
+  #vjunos_switch: /volume/download/docroot/software/vJunos-switch/23.2R1/vJunos-switch-23.2R1.14.qcow2
+  #vjunos_router: /volume/download/docroot/software/vJunos-Router/23.2R1/vJunos-router-23.2R1.15.qcow2
+  #vjunos_evolved: images/vJunosEvolved-23.2R1-S1.8-EVO.qcow2
   vjunos_router: images/vJunos-router-23.2R1.15.qcow2
   # vjunos_router: images/vJunos-router-23.4R1.10.qcow2
 junos_login:
@@ -1046,7 +1049,7 @@ vm:
       em1:
         bridge: d1l4p3
   svr5:
-    type: pcsmall
+    type: pcsmall 
     os: ubuntu
     vnc: yes
     interfaces:

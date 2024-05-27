@@ -1,5 +1,5 @@
 ---
-name: pa
+name: pa2
 pod: 
   type: vmm
   #vmmserver: sv8-pod4-vmm.englab.juniper.net
@@ -21,7 +21,7 @@ images:
   bridge: images/bridge.qcow2
   #vjunos_switch: images/vJunos-switch-23.2R1.14.qcow2
   #vjunos_router: images/vJunos-router-23.4R1.10.qcow2
-  vjunos_router: images/vJunos-router-23.2R1.15.qcow2
+  vjunos_router: images/vJunos-router-23.4R1.10.qcow2
   pa2: images/paragon-2.0.0-disk1.qcow2
   # vjunos_evolved: images/vJunosEvolved-23.2R1.15.qcow2
   #vjunos_evolved: images/vJunosEvolved-23.2R1-S1.8-EVO.qcow2
