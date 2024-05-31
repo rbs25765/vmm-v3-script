@@ -73,6 +73,15 @@ you can copy the disk image from my home directory on VMM /vmm/data/user_disks/i
         ssh control
         ssh node1
         ssh r1
+## update and upgrade package on node GW
+1. open ssh session to node GW
+2. update and upgrade package on node GW
+
+        ssh gw
+        sudo apt -y update && sudo apt -y upgrade
+        sudo reboot
+
+3. Wait until it rebooted.
 
 ## set ip address on Paragon virtual appliance
 1. To access graphic console of Paragon virtual appliance using VNC, open ssh session to node **gw**, and the login banner will provide the URL to access VNC port of node1, node2, node2, node3
@@ -128,8 +137,8 @@ node4|172.16.11.14/24|172.16.11.1|10.49.32.95|10.49.32.97
         set paragon cluster ntp ntp-servers ntp.juniper.net
         set paragon cluster common-services ingress ingress-vip 172.16.11.101
         set paragon cluster applications active-assurance test-agent-gateway-vip 172.16.11.102
-        set paragon cluster applications web-ui web-admin-user <your email>
-        set paragon cluster applications web-ui web-admin-password <your password>
+        set paragon cluster applications web-ui web-admin-user irzan@juniper.net
+        set paragon cluster applications web-ui web-admin-password "J4k4rt4#01"
         commit
         exit
 

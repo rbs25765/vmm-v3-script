@@ -69,16 +69,16 @@ def read_config(config):
 				create_config_interfaces(d1)
 		change_gateway4(d1)
 		change_ztp(d1)
-		adpassword_env=os.getenv('ADPASSWORD')
+		#adpassword_env=os.getenv('ADPASSWORD')
 		#print(f"adpassword ${adpassword_env}")
 		user_env=os.getenv('USER')
 		vmmpassword_env=os.getenv('VMMPASSWORD')
-		if adpassword_env:
-			d1['pod']['adpassword'] = adpassword_env
-		else:
-			if 'adpassword' not in d1['pod']: 
-				print("parameter adpassword is not defined on configuration ")
-				sys.exit()
+		# if adpassword_env:
+		# 	d1['pod']['adpassword'] = adpassword_env
+		# else:
+		# 	if 'adpassword' not in d1['pod']: 
+		# 		print("parameter adpassword is not defined on configuration ")
+		# 		sys.exit()
 		if not d1['pod']['user']:
 			d1['pod']['user']=user_env
 		if vmmpassword_env:
@@ -89,6 +89,7 @@ def read_config(config):
 				sys.exit()
 		#if not d1['']
 		# add interface to vjunos_evolved VM
+		#print(f"password AD {adpassword_env}, VMM {vmmpassword_env}")
 		for i in d1['vm'].keys():
 			if d1['vm'][i]['os']=='vjunos_evolved':
 				## add interface em1, em2, em3, em4
@@ -512,22 +513,27 @@ def checking_config_syntax(d1):
 
 
 def sshconnect(d1):
-	if 'jumpserver' in d1['pod'].keys():
-		jumphost=paramiko.SSHClient()
-		jumphost.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		jumphost.connect(hostname=d1['pod']['jumpserver'],username=d1['pod']['user'],password=d1['pod']['adpassword'])
-		jumphost_transport=jumphost.get_transport()
-		src_addr=(d1['pod']['jumpserver'],22)
-		dest_addr=(d1['pod']['vmmserver'],22)
-		jumphost_channel = jumphost_transport.open_channel("direct-tcpip", dest_addr, src_addr)
-		ssh=paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		# ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['unixpassword'],sock=jumphost_channel)
-		ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['vmmpassword'],sock=jumphost_channel)
-	else:
-		ssh=paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['adpassword'])
+	# if 'jumpserver' in d1['pod'].keys():
+	# 	jumphost=paramiko.SSHClient()
+	# 	jumphost.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	# 	jumphost.connect(hostname=d1['pod']['jumpserver'],username=d1['pod']['user'],password=d1['pod']['adpassword'])
+	# 	jumphost_transport=jumphost.get_transport()
+	# 	src_addr=(d1['pod']['jumpserver'],22)
+	# 	dest_addr=(d1['pod']['vmmserver'],22)
+	# 	jumphost_channel = jumphost_transport.open_channel("direct-tcpip", dest_addr, src_addr)
+	# 	ssh=paramiko.SSHClient()
+	# 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	# 	# ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['unixpassword'],sock=jumphost_channel)
+	# 	ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['vmmpassword'],sock=jumphost_channel)
+	# else:
+	# 	ssh=paramiko.SSHClient()
+	# 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	# 	ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['adpassword'])
+	# return ssh
+	ssh=paramiko.SSHClient()
+	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	#print(f"User {d1['pod']['user']}, password {d1['pod']['vmmpassword']}")
+	ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['vmmpassword'])
 	return ssh
 
 def connect_to_gw(d1):
@@ -535,22 +541,26 @@ def connect_to_gw(d1):
 		d1['gw_ip'] = get_ip_vm(d1,'gw')
 	user_id = get_ssh_user(d1,'gw')
 	passwd='pass01'
-	if 'jumpserver' in d1['pod'].keys():
-		jumphost=paramiko.SSHClient()
-		jumphost.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		jumphost.connect(hostname=d1['pod']['jumpserver'],username=d1['pod']['user'],password=d1['pod']['adpassword'])
-		jumphost_transport=jumphost.get_transport()
-		src_addr=(d1['pod']['jumpserver'],22)
-		dest_addr=(d1['gw_ip'],22)
-		jumphost_channel = jumphost_transport.open_channel("direct-tcpip", dest_addr, src_addr)
-		ssh=paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		# ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['unixpassword'],sock=jumphost_channel)
-		ssh.connect(hostname=d1['gw_ip'],username=user_id,password=passwd,sock=jumphost_channel)
-	else:
-		ssh=paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(hostname=d1['gw_ip'],username=user_id,password=passwd)
+	# if 'jumpserver' in d1['pod'].keys():
+	# 	jumphost=paramiko.SSHClient()
+	# 	jumphost.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	# 	jumphost.connect(hostname=d1['pod']['jumpserver'],username=d1['pod']['user'],password=d1['pod']['adpassword'])
+	# 	jumphost_transport=jumphost.get_transport()
+	# 	src_addr=(d1['pod']['jumpserver'],22)
+	# 	dest_addr=(d1['gw_ip'],22)
+	# 	jumphost_channel = jumphost_transport.open_channel("direct-tcpip", dest_addr, src_addr)
+	# 	ssh=paramiko.SSHClient()
+	# 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	# 	# ssh.connect(hostname=d1['pod']['vmmserver'],username=d1['pod']['user'],password=d1['pod']['unixpassword'],sock=jumphost_channel)
+	# 	ssh.connect(hostname=d1['gw_ip'],username=user_id,password=passwd,sock=jumphost_channel)
+	# else:
+	# 	ssh=paramiko.SSHClient()
+	# 	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	# 	ssh.connect(hostname=d1['gw_ip'],username=user_id,password=passwd)
+	# return ssh
+	ssh=paramiko.SSHClient()
+	ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+	ssh.connect(hostname=d1['gw_ip'],username=user_id,password=passwd)
 	return ssh
 
 def get_mgmt_ip(d1,i):

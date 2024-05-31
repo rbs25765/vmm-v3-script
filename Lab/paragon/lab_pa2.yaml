@@ -9,6 +9,7 @@ pod:
   #jumpserver: ttsv-shell001.juniper.net
   user: irzan
   #adpassword: ThisIsAnaMabokCoy
+  #vmmpassword: sksksksk
   home_dir : /vmm/data/user_disks/irzan
   ssh_key_name: key1
   ssh_key_host_name: keyhost
