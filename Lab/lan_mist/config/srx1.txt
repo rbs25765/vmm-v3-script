@@ -2,6 +2,7 @@ set security nat source rule-set rs1 from zone RZ1
 set security nat source rule-set rs1 from zone RZ2
 set security nat source rule-set rs1 from zone RZ3
 set security nat source rule-set rs1 from zone underlay
+set security nat source rule-set rs1 from zone external
 set security nat source rule-set rs1 to zone untrust
 set security nat source rule-set rs1 rule r1 match source-address 0.0.0.0/0
 set security nat source rule-set rs1 rule r1 match destination-address 0.0.0.0/0
@@ -14,10 +15,26 @@ set security policies from-zone RZ2 to-zone RZ2 policy default-permit match sour
 set security policies from-zone RZ2 to-zone RZ2 policy default-permit match destination-address any
 set security policies from-zone RZ2 to-zone RZ2 policy default-permit match application any
 set security policies from-zone RZ2 to-zone RZ2 policy default-permit then permit
-set security policies from-zone RZ2 to-zone RZ3 policy default-permit match source-address any
-set security policies from-zone RZ2 to-zone RZ3 policy default-permit match destination-address any
-set security policies from-zone RZ2 to-zone RZ3 policy default-permit match application any
-set security policies from-zone RZ2 to-zone RZ3 policy default-permit then permit
+set security policies from-zone RZ3 to-zone RZ3 policy default-permit match source-address any
+set security policies from-zone RZ3 to-zone RZ3 policy default-permit match destination-address any
+set security policies from-zone RZ3 to-zone RZ3 policy default-permit match application any
+set security policies from-zone RZ3 to-zone RZ3 policy default-permit then permit
+
+set security policies from-zone RZ1 to-zone external policy default-permit match source-address any
+set security policies from-zone RZ1 to-zone external policy default-permit match destination-address any
+set security policies from-zone RZ1 to-zone external policy default-permit match application any
+set security policies from-zone RZ1 to-zone external policy default-permit then permit
+
+set security policies from-zone RZ2 to-zone external policy default-permit match source-address any
+set security policies from-zone RZ2 to-zone external policy default-permit match destination-address any
+set security policies from-zone RZ2 to-zone external policy default-permit match application any
+set security policies from-zone RZ2 to-zone external policy default-permit then permit
+
+set security policies from-zone RZ3 to-zone external policy default-permit match source-address any
+set security policies from-zone RZ3 to-zone external policy default-permit match destination-address any
+set security policies from-zone RZ3 to-zone external policy default-permit match application any
+set security policies from-zone RZ3 to-zone external policy default-permit then permit
+
 set security policies from-zone underlay to-zone underlay policy default-permit match source-address any
 set security policies from-zone underlay to-zone underlay policy default-permit match destination-address any
 set security policies from-zone underlay to-zone underlay policy default-permit match application any
@@ -34,10 +51,17 @@ set security policies from-zone RZ3 to-zone untrust policy default-permit match 
 set security policies from-zone RZ3 to-zone untrust policy default-permit match destination-address any
 set security policies from-zone RZ3 to-zone untrust policy default-permit match application any
 set security policies from-zone RZ3 to-zone untrust policy default-permit then permit
+
+set security policies from-zone external to-zone untrust policy default-permit match source-address any
+set security policies from-zone external to-zone untrust policy default-permit match destination-address any
+set security policies from-zone external to-zone untrust policy default-permit match application any
+set security policies from-zone external to-zone untrust policy default-permit then permit
+
 set security policies from-zone underlay to-zone untrust policy default-permit match source-address any
 set security policies from-zone underlay to-zone untrust policy default-permit match destination-address any
 set security policies from-zone underlay to-zone untrust policy default-permit match application any
 set security policies from-zone underlay to-zone untrust policy default-permit then permit
+
 set security policies default-policy deny-all
 set security policies pre-id-default-policy then log session-close
 set security zones security-zone RZ1 tcp-rst
@@ -49,6 +73,7 @@ set security zones security-zone RZ2 interfaces ge-0/0/2.302 host-inbound-traffi
 set security zones security-zone RZ3 tcp-rst
 set security zones security-zone RZ3 interfaces ge-0/0/1.303 host-inbound-traffic protocols bgp
 set security zones security-zone RZ3 interfaces ge-0/0/2.303 host-inbound-traffic protocols bgp
+set security zones security-zone external interfaces ge-0/0/3.0
 set security zones security-zone underlay interfaces ge-0/0/1.1001
 set security zones security-zone underlay interfaces ge-0/0/2.1001
 set security zones security-zone untrust screen untrust-screen
@@ -81,6 +106,8 @@ set interfaces ge-0/0/2 unit 303 family inet address 192.168.31.10/31
 set interfaces ge-0/0/2 unit 1001 description "to underlay core2"
 set interfaces ge-0/0/2 unit 1001 vlan-id 1001
 set interfaces ge-0/0/2 unit 1001 family inet address 172.16.101.2/31
+set interfaces ge-0/0/3 unit 0 description "to external node"
+set interfaces ge-0/0/3 unit 0 family inet address 172.16.200.1/24
 set policy-options policy-statement from_static term 1 from route-filter 0.0.0.0/0 exact
 set policy-options policy-statement from_static term 1 then accept
 set policy-options policy-statement from_static term default then reject
@@ -107,7 +134,4 @@ set routing-options static route  172.16.254.0/23 next-hop 172.16.101.1
 set routing-options static route  172.16.254.0/23 next-hop 172.16.101.3
 set routing-options static route 172.16.102.0/24 next-hop 172.16.101.1
 set routing-options static route 172.16.102.0/24 next-hop 172.16.101.3
-
-
-https://paragon-automation.atlassian.net/wiki/spaces/PE/pages/4218552857/Installation+Configuration
 

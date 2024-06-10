@@ -1,0 +1,12 @@
+set interfaces ge-0/0/0 mtu 9000
+set interfaces ge-0/0/0 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ge-0/0/0 unit 0 family ethernet-switching vlan members v101
+set interfaces ge-0/0/0 unit 0 family ethernet-switching vlan members v102
+
+set interfaces ge-0/0/3 mtu 9000
+set interfaces ge-0/0/3 unit 0 family ethernet-switching interface-mode trunk
+set interfaces ge-0/0/3 unit 0 family ethernet-switching vlan members all
+
+set protocols rstp interface ge-0/0/3
+set vlans v101 vlan-id 101
+set vlans v102 vlan-id 102

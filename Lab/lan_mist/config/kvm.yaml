@@ -1,5 +1,4 @@
 cat << EOF | sudo tee /etc/netplan/02_net.yaml
-
 network:
   ethernets:
     eth1:
@@ -8,9 +7,12 @@ network:
     eth2:
       dhcp4: no
       mtu: 9000
+    eth3:
+      dhcp4: no
+      mtu: 9000
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:37:02
+      macaddress: 56:04:1b:00:33:ef
       mtu: 9000
       interfaces:
         - eth1
@@ -22,4 +24,8 @@ network:
       openvswitch: {}
       interfaces:
         - bond0
+    ovs2:
+      openvswitch: {}
+      interfaces:
+        - eth3
 EOF

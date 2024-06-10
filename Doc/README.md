@@ -7,7 +7,10 @@ The scripts has been modified to work with VMM 3.0
 
 ## update on the script
 new features has been added into the scripts :
-- allow access into the VMM lab using the jump host. Please edit the lab.yaml to specify which VMM lab that you want to use and the jump host to access that lab.
+
+~~- allow access into the VMM lab using the jump host. Please edit the lab.yaml to specify which VMM lab that you want to use and the jump host to access that lab.~~
+- vpn is no longer required, everything is handled by zscaler connect
+- jump host is no longer required
 - using jinja2 template to create configuration for junos devices. Currently it support configuration for the following :
     * address family : inet, inet6  (work in progress), iso, mpls
     * protocols : isis, mpls, rsvp, ldp, pcep, bgp-ls
@@ -18,12 +21,12 @@ new features has been added into the scripts :
 
 ## The supported VMs :
 - vMX
-- vQFX
+~~- vQFX~~
 - vSRX
 - vEVO/vPTX
 - Apstra fabric controller
-- VCenter Server
-- ESXi running as VM with or without VSAN
+~~- VCenter Server~~
+~~- ESXi running as VM with or without VSAN~~
 - PC with ubuntu OS 
 - PC with centos OS
 - bridge using Alpine linux to provide Delay or packet loss between Nodes
@@ -67,10 +70,6 @@ please edit this file for the following :
 - the VMM pod which will be used
 - the jump host to access the VMM lab
 - the ssh key to access jumphost, vmm server and the VMs inside the topology. 
-- your active directory password
-  - if you don't to hardcode your AD password into file lab.yaml, your can set environment variable ADPASSWORD with your AD password
-
-        export ADPASSWORD="what ever is your password"
 - JNPR Lab Domain password (to access vmm server)
   - if you don't to hardcode your VMM password into file lab.yaml, your can set environment variable VMMPASSWORD with your JNPRLAB domain password
 

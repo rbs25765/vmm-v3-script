@@ -1,29 +1,29 @@
 ---
-name: lan_mist
+name: mist1
 pod: 
   type: vmm
   # if your account can access vmm lab directly, then you can comment out jumpserver
   #jumpserver: ttsv-shell110.juniper.net
-  jumpserver: ttqc-shell001.juniper.net
+  #jumpserver: ttqc-shell001.juniper.net
   #vmmserver: q-pod27-vmm.englab.juniper.net
   vmmserver: q-pod27-vmm.englab.juniper.net
   #vmmserver: sv8-pod4-vmm.englab.juniper.net
   user: irzan
-  adpassword: AnaMabokCoys
+  #adpassword: AnaMabokCoys
   home_dir : /vmm/data/user_disks/irzan
   ssh_key_name: key1
   ssh_key_host_name: keyhost
 images:
   gw: images/gw.qcow2
   ubuntu: images/ubuntu22.04.qcow2
-  debian: images/debian_with_kvm.qcow2
+  # debian: images/debian_with_kvm.qcow2
   desktop: images/desktop.qcow2
   vmx: images/vmx/junos-vmx-x86-64-23.2R1.13.vmdk
-  bridge: images/bridge.qcow2
-  vjunos_switch: images/vJunos-switch-23.2R1.14.qcow2
-  vjunos_router: images/vJunos-router-23.2R1.15.qcow2
+  # bridge: images/bridge.qcow2
+  vjunos_switch: images/vJunos-switch-23.4R1.10.qcow2
+  vjunos_router: images/vJunos-router-23.4R1.10.qcow2
   # vjunos_switch: images/vJunos-switch-23.4R1.10.qcow2
-  vsrx: images/vsrx/junos-vsrx3-x86-64-23.2R1.13.qcow2
+  vsrx: images/junos-vsrx3-x86-64-23.4R1.9.qcow2
 junos_login:
   login: admin
   password: pass01
@@ -59,17 +59,10 @@ vm:
           inet6: fc00:dead:beef:ff12::1/127
       ge-0/0/1:
         bridge: c1p0
-        family:
-          inet: 192.168.255.0/31
       ge-0/0/2:
         bridge: c2p0
-        family:
-          inet: 192.168.255.2/31
       ge-0/0/3:
         bridge: ext1
-        family:
-          inet: 192.168.150.1/24
-          inet6: fc00:dead:beef:f150::1/64
   core1:
     type: vjunos_switch
     os: vjunos_switch
@@ -412,6 +405,8 @@ vm:
         bridge: c1p7
       em2:
         bridge: c2p7
+      em3:
+        bridge: ext1
 
   
   

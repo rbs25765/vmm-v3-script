@@ -6,9 +6,9 @@ sudo iptables -t nat -A POSTROUTING -o eth4 --source 172.16.12.0/24 --destinatio
 config t
 router bgp 65412
  no bgp ebgp-requires-policy
- neighbor 172.16.11.2 remote-as 65420
- neighbor 172.16.11.3 remote-as 65420
- neighbor 172.16.11.4 remote-as 65420
+ neighbor 172.16.11.11 remote-as 65420
+ neighbor 172.16.11.12 remote-as 65420
+ neighbor 172.16.11.13 remote-as 65420
 exit
 exit
 write mem
