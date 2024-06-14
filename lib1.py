@@ -21,13 +21,82 @@ import pexpect
 import pprint
 from scp import SCPClient
 import random
+import subprocess
+from passlib.hash import md5_crypt
 #import json
 
  
 # from jnpr.junos import Device
 # from jnpr.junos.utils.config import Config
 
-from passlib.hash import md5_crypt
+def generate_wireguard_keys():
+    """
+    Generate a WireGuard private & public key
+    Requires that the 'wg' command is available on PATH
+    Returns (private_key, public_key), both strings
+    """
+    privkey = subprocess.check_output("wg genkey", shell=True).decode("utf-8").strip()
+    pubkey = subprocess.check_output(f"echo '{privkey}' | wg pubkey", shell=True).decode("utf-8").strip()
+    return [privkey, pubkey]
+
+def create_wg_config(d1):
+	dummy1={}
+	gw_t1="""
+[Interface]
+PrivateKey={{gw_key.0}}
+Address={{gw_ip}}
+ListenPort=443
+[Peer]
+PublicKey={{ws_key.1}}
+AllowedIPs={{allowed_ip_gw}}
+"""
+	ws_t1="""
+[Interface]
+PrivateKey={{ws_key.0}}
+Address={{ws_ip}}
+[Peer]
+PublicKey={{gw_key.1}}
+EndPoint={{eth0_gw}}:443
+AllowedIPs={{allowed_ip_ws}}
+"""
+
+	try:
+		if 'wg' in d1.keys():
+			#print("wireguard is configured")
+			result1 = subprocess.check_output("wg", shell=True).decode("utf-8").strip()
+			if 'tunnel_ip' not in d1['wg'].keys():
+				dummy1['gw_ip'] = '192.168.199.0/31'
+				dummy1['ws_ip'] = '192.168.199.1/31'
+			else:
+				dummy1['gw_ip'] = d1['wg']['tunnel_ip'][0]
+				dummy1['ws_ip'] = d1['wg']['tunnel_ip'][1]
+			dummy1['gw_key'] = generate_wireguard_keys()
+			dummy1['ws_key'] = generate_wireguard_keys()
+			dummy1['allowed_ip_gw']=f"{dummy1['ws_ip'].split('/')[0]}/32"
+			dummy1['allowed_ip_ws']=f"{dummy1['gw_ip'].split('/')[0]}/32"
+			for i in d1['wg']['prefix_allowed']:
+				dummy1['allowed_ip_ws']+=f",{i}"
+			print("getting node gw eth0 ip address")
+			dummy1['eth0_gw']=get_ip_vm(d1,'gw')
+			# dummy1['allowd_ip_wg'].append(dummy1['ws_ip'].split('/')[0])
+			#print(dummy1)
+			gw_config=Template(gw_t1).render(dummy1)
+			print(gw_config)
+			ws_config=Template(ws_t1).render(dummy1)
+			print(ws_config)
+
+			print("writing wireguard configuration node gw")
+			print("upload file tmp/wg0_gw.conf to node gw, /etc/wireguard/wg0.conf, and restart wireguard service")
+			with open('tmp/wg0_gw.conf','w') as f1:
+				f1.write(gw_config)
+			print("writing wireguard configuration for your workstation")
+			print("upload file tmp/wg0_ws.conf the local wiregard directory, i.e /usr/local/etc/wireguard/wg0.conf, and restart wireguard service")
+			with open('tmp/wg0_ws.conf','w') as f1:
+				f1.write(ws_config)
+		else:
+			print("wireguard is not configured")
+	except:
+		print("wireguard is not installed  on your system")
 
 def print_data(d1):
 	print("printing data")
@@ -56,13 +125,17 @@ def read_config(config):
 			#num_link = len(d1['fabric']['topology'])
 			num_link = num_link_with_ip(d1)
 			pref_len = 32 - int(d1['fabric']['subnet'].split('/')[1])
-			num_subnet = int( (2 **  pref_len) / 2)		
-			if num_link > num_subnet:
-				print("not enough ip address for fabric link\nnum of link %d, num of subnet %d " %(num_link,num_subnet))
-				d1={}
+			pref_len6 = 128 - int(d1['fabric']['subnet6'].split('/')[1])
+			num_subnet = int( (2 **  pref_len) / 2)
+			num_subnet6 = int( (2 **  pref_len6) / 2)
+			#print(f"num_link {num_link} num_subnet {num_subnet} num_subnet6 {num_subnet6}")
+			#exit(1)
+			if (num_link > num_subnet) or (num_link > num_subnet6) :
+				print(f"not enough ip address for fabric link\nnum of link {num_link}, num of subnet {num_subnet}, num of subnet6 {num_subnet6}" )
+				exit(1)
 			elif check_ip(d1):
 				print("wrong subnet allocation")
-				print("subnet %s can't be used with prefix %s" %(d1['fabric']['subnet'].split('/')[0],d1['fabric']['subnet'].split('/')[1]))
+				print(f"subnet {d1['fabric']['subnet'].split('/')[0]} can't be used with prefix {d1['fabric']['subnet'].split('/')[1]}")
 			#elif not check_vm(d1):
 			#	print("number of VM on topology doesn't match with on configuration")
 			else:
@@ -167,6 +240,9 @@ def create_config_interfaces(d1):
 				d1['fabric']['topology'][i].append('0')
 				d1['fabric']['topology'][i].append('0')
 	list_vm = list_vm_from_fabric(d1)
+	# print(d1['fabric']['topology'])
+	# print(f"number of link {num_link}")
+	# exit(1)
 	#print(list_vm)
 	d2={'vm': {} }
 	for i in list_vm:
@@ -474,10 +550,10 @@ def checking_config_syntax(d1):
 			print("this type of VM, " + d1['vm'][i]['type'] + " is not supported yet")
 			return 0
 		#print("param1.vm_os",param1.vm_os)
-		if not d1['vm'][i]['os'] in param1.vm_os:
-			print("ERROR for VM ",i)
-			print("this OS " + d1['vm'][i]['os'] + " is not supported yet")
-			return 0
+		# if not d1['vm'][i]['os'] in param1.vm_os:
+		# 	print("ERROR for VM ",i)
+		# 	print("this OS " + d1['vm'][i]['os'] + " is not supported yet")
+		# 	return 0
 	# checking interface
 	for i in d1['vm'].keys():
 		if (d1['vm'][i]['type'] in param1.vm_type.keys()) and (d1['vm'][i]['type'] not in ['vmx','vjunos_evolved','vsrx','mx240','mx480','mx960','vjunos_switch','vjunos_router']):
@@ -685,18 +761,18 @@ def get_ip_vm(d1,i):
 		print("not implemented for this type")
 		return ""
 
-def get_hosts_config(d1):
-	host_yes=['centos','rhel','ubuntu','ubuntu2','debian','esxi','aos','aos_ztp','bridge','desktop']
-	host_config=['127.0.0.1 localhost','::1 ip6-localhost ip6-loopback']
-	for i in d1['vm'].keys():
-		if d1['vm'][i]['os'] in host_yes:
-			for j in d1['vm'][i]['interfaces'].keys():
-				#print(f"HOST {i}, Interfaces {j}")
-				if 'family' in d1['vm'][i]['interfaces'][j].keys():
-					if 'inet' in d1['vm'][i]['interfaces'][j]['family'].keys():
-						ipaddr=d1['vm'][i]['interfaces'][j]['family']['inet'].split('/')[0]
-						host_config.append("{} {}".format(ipaddr,i))
-	return host_config
+# def get_hosts_config(d1):
+# 	host_yes=['centos','rhel','ubuntu','ubuntu2','debian','esxi','aos','aos_ztp','bridge','desktop']
+# 	host_config=['127.0.0.1 localhost','::1 ip6-localhost ip6-loopback']
+# 	for i in d1['vm'].keys():
+# 		if d1['vm'][i]['os'] in host_yes:
+# 			for j in d1['vm'][i]['interfaces'].keys():
+# 				#print(f"HOST {i}, Interfaces {j}")
+# 				if 'family' in d1['vm'][i]['interfaces'][j].keys():
+# 					if 'inet' in d1['vm'][i]['interfaces'][j]['family'].keys():
+# 						ipaddr=d1['vm'][i]['interfaces'][j]['family']['inet'].split('/')[0]
+# 						host_config.append("{} {}".format(ipaddr,i))
+# 	return host_config
 
 
 def get_dhcp_config(d1):

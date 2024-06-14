@@ -42,8 +42,8 @@ cli -c "configure; set system commit synchronize; set chassis evpn-vxlan-default
 EOF
 sudo chmod +x /containers_data/tftp/junos_custom1.sh
 
-#export JUNOS_VERSION="23.4R1.10"
-export JUNOS_VERSION="23.2R1.14"
+export JUNOS_VERSION="23.4R1.10"
+#export JUNOS_VERSION="23.2R1.14"
 sudo sed -i -e "s/junos-version1/${JUNOS_VERSION}/" /containers_data/tftp/ztp.json
 sudo sed -i -e "s/junos-version2//" /containers_data/tftp/ztp.json
 export LINE_JUNOS=`grep -n '"junos": {' /containers_data/tftp/ztp.json | cut -f 1 -d ":"`
@@ -67,7 +67,7 @@ line2=`grep -n "Step3"  /containers_data/dhcp/dhcpd.conf | cut -f 1 -d ":"`
 line2=`expr $line2 - 1`
 sudo sed -i -e "${line1},${line2}d" /containers_data/dhcp/dhcpd.conf
 sudo sed -i -e 's/dc1.yourdatacenter.com/vmmlab.juniper.net/' /containers_data/dhcp/dhcpd.conf
-sudo sed -i -e 's/10.1.2.13, 10.1.2.14/8.8.8.8,8.8.4.4/' /containers_data/dhcp/dhcpd.conf
+sudo sed -i -e 's/10.1.2.13, 10.1.2.14/10.49.32.95, 10.49.32.95/' /containers_data/dhcp/dhcpd.conf
 
 cat ~/ztp_config.txt | sudo tee -a  /containers_data/dhcp/dhcpd.conf
 

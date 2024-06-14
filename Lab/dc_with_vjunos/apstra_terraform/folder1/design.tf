@@ -3,7 +3,7 @@ data "apstra_logical_device" "selected" {
 }
 
 variable "device_profile" {
-    default = "6b3d518a-e00b-4992-9b8d-cf4954c64b10"
+    default = "721b9b60-e31e-4b3f-b5f0-5086dedeef8b"
 }
 
 resource "apstra_interface_map" "aim" {

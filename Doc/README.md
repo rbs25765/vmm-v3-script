@@ -17,16 +17,14 @@ new features has been added into the scripts :
 - topology of point-to-point connection between junos devices can be generated automatically, for both bridge assignment and address (ipv4/ipv6) allocation
 - On VMM 3.0, configuration of PC's VM is no longer written to the disk image when the VM was started for the first time, so on this script, the configuration of the PC is pushed using ssh, therefore PC VMs must be assigned with IP address
 - the IP address assignment to the PC VMs is done using dhcp with node GW as the dhcp server
+- create wireguard configuration for direct connection into the nodes in the Lab. 
 
 
 ## The supported VMs :
 - vMX
-~~- vQFX~~
 - vSRX
 - vEVO/vPTX
 - Apstra fabric controller
-~~- VCenter Server~~
-~~- ESXi running as VM with or without VSAN~~
 - PC with ubuntu OS 
 - PC with centos OS
 - bridge using Alpine linux to provide Delay or packet loss between Nodes
@@ -104,6 +102,7 @@ There are different arguments required by this script
 - argument `set_gw`: to send configuration of gateway (ip address on other interface (em1,em2, etc) and DHCP server configuration)
 - argument `set_host`: to send configuration to Linux VMs
 - argument `init_junos`: to send configuration to vEX and/or vPTX
+- argument `create_gw_config`: to create wireguard configuration
 
 ## Caution
 

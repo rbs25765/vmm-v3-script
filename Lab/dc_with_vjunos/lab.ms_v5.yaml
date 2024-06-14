@@ -9,8 +9,8 @@ pod:
   vmmserver: q-pod27-vmm.englab.juniper.net
   #vmmserver: sv8-pod4-vmm.englab.juniper.net
   user: irzan
-  adpassword: AnaMabokCoys
-  vmmpassword: AnaMabokCoys
+  # adpassword: AnaMabokCoys
+  # vmmpassword: AnaMabokCoys
   home_dir : /vmm/data/user_disks/irzan
   ssh_key_name: key1
   ssh_key_host_name: keyhost
@@ -19,15 +19,15 @@ images:
   ubuntu: images/ubuntu22.04.qcow2
   vsrx: images/junos-vsrx3-x86-64-23.4R1.9.qcow2
   #vsrx: /volume/download/docroot/software/vsrx3.0/23.4R1/junos-vsrx3-x86-64-23.4R1.9.qcow2
-  aos: images/aos_server_4.2.1.1-10.qcow2
+  aos: images/aos_server_4.2.2-2.qcow2
   aos_ztp: images/apstra-ztp-4.2.1-21.qcow2
   aos_flow: images/apstra-flow-4.2.1-ubuntu-22.04-amd64-6.4.2.qcow2
   #vjunos_switch: images/vJunos-switch-23.4R1.10.qcow2
-  vjunos_switch: images/vJunos-switch-23.2R1.14.qcow2
+  vjunos_switch: images/vJunos-switch-23.4R1.10.qcow2
   #vjunos_switch: /volume/download/docroot/software/vJunos-switch/23.2R1/vJunos-switch-23.2R1.14.qcow2
   #vjunos_router: /volume/download/docroot/software/vJunos-Router/23.2R1/vJunos-router-23.2R1.15.qcow2
   #vjunos_evolved: images/vJunosEvolved-23.2R1-S1.8-EVO.qcow2
-  vjunos_router: images/vJunos-router-23.2R1.15.qcow2
+  vjunos_router: images/vJunos-router-23.4R1.10.qcow2
   # vjunos_router: images/vJunos-router-23.4R1.10.qcow2
 junos_login:
   login: admin
@@ -69,6 +69,14 @@ proxy:
       destPort: 443
       destIP: 172.16.10.2
   # DynForward: 1080
+wg:
+  gw_ip: 192.168.199.0/31
+  ws_ip: 192.168.199.1/31
+  prefix_allowed:
+  - 172.16.11.0/24 
+  - 172.16.12.0/24 
+  - 172.16.13.0/24 
+  - 172.16.255.0/24
 vm:
   gw:
     type: gw

@@ -6,7 +6,7 @@ terraform {
    }
 }
 provider "apstra" {
-    url = "https://127.0.0.1:9191"
+    url = "https://172.16.10.2"
     tls_validation_disabled = true
     blueprint_mutex_enabled = false
     experimental = true
