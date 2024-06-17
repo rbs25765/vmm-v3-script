@@ -18,10 +18,10 @@ set system syslog file messages authorization info
 set chassis network-services enhanced-ip
 set interfaces ge-0/0/0 mtu 9000
 set interfaces ge-0/0/0 unit 0 family iso
-set interfaces ge-0/0/0 unit 0 family inet6 address beef::1102:1/127
+set interfaces ge-0/0/0 unit 0 family inet6
 set interfaces ge-0/0/2 mtu 9000
 set interfaces ge-0/0/2 unit 0 family iso
-set interfaces ge-0/0/2 unit 0 family inet6 address beef::1202:1/127
+set interfaces ge-0/0/2 unit 0 family inet6
 set interfaces fxp0 unit 0 family inet address 172.16.10.3/24
 set interfaces lo0 unit 0 family iso address 49.0001.1921.6800.0002.00
 set interfaces lo0 unit 0 family inet6 address bad:cafe::02/128
@@ -31,5 +31,6 @@ set protocols isis interface ge-0/0/0.0 point-to-point
 set protocols isis interface ge-0/0/2.0 point-to-point
 set protocols isis interface lo0.0 passive
 set protocols isis source-packet-routing srv6 locator SRV6-LOC-1 end-sid bad:feed:0:02::
+deactivate protocols isis source-packet-routing
 set protocols lldp interface ge-0/0/0
 set protocols lldp interface ge-0/0/2
