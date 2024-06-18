@@ -147,7 +147,7 @@ vm:
       ge-0/0/0:
         bridge: pe11p1
         mtu: 9000
-      ge-0/0/2:
+      ge-0/0/1:
         bridge: pe12p1
         mtu: 9000
   p2:
@@ -163,7 +163,7 @@ vm:
       ge-0/0/0:
         bridge: pe11p2
         mtu: 9000
-      ge-0/0/2:
+      ge-0/0/1:
         bridge: pe12p2
         mtu: 9000
   pe12:

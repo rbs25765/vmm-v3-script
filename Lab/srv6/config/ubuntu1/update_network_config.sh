@@ -1,25 +1,6 @@
+#!/bin/bash
+cat << EOF | sudo tee /etc/netplan/02_net.yaml
 network:
-  ethernets:
-    eth0:
-      addresses : ['172.16.10.5/24']
-      nameservers:
-         addresses: ['10.49.32.95', '10.49.32.97']
-      routes: 
-       - to: 0.0.0.0/0
-         via: 172.16.10.254
-         metric: 1
-    eth1:
-      dhcp4: false
-      mtu: 9000
-    eth2:
-      dhcp4: false
-      mtu: 9000
-    eth3:
-      dhcp4: false
-      mtu: 9000
-    eth4:
-      dhcp4: false
-      mtu: 9000
   vlans:
     eth1v101:
       id: 101
@@ -80,3 +61,11 @@ network:
       interfaces: [eth3v105]
     ce7eth1: {}
     ce8eth1: {}
+EOF
+
+sudo netplan apply
+
+for i in ce{1..8}eth1 pe11gev10{1..5} pe12gev10{1..5}
+do
+   sudo sysctl -w "net.ipv6.conf.${i}.disable_ipv6=1"
+done

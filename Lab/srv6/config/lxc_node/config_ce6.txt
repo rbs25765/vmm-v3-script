@@ -1,5 +1,5 @@
 CE6
------------
+-------------
 lxc network configuration
 
   eth0:

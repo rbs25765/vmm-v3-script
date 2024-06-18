@@ -1,5 +1,5 @@
 CE8
------------
+------------
 lxc network configuration
 
   eth0:
@@ -35,7 +35,7 @@ FRR configuration
 
 frr version 10.0.1
 frr defaults traditional
-hostname ce1
+hostname ce8
 log syslog informational
 ipv6 forwarding
 service integrated-vtysh-config

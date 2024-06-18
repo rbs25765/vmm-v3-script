@@ -37,8 +37,9 @@ frr version 10.0.1
 frr defaults traditional
 hostname ce1
 log syslog informational
-ipv6 forwarding
 service integrated-vtysh-config
+ipv6 forwarding
+
 !
 router bgp 1002
  no bgp ebgp-requires-policy

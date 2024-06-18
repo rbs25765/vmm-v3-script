@@ -1,0 +1,6 @@
+auto eth0
+iface eth0 inet static
+    address 192.168.10.1/24
+    mtu 1500
+iface eth0 inet6 static
+    address 2001:dead:beef:aa10::1/64

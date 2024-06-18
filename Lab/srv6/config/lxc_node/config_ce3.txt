@@ -15,6 +15,7 @@ lxc network configuration
 
 network configuration 
 
+
 cat << EOF |  tee /etc/network/interfaces
 auto eth0
 iface eth0 inet static
@@ -35,10 +36,10 @@ FRR configuration
 
 frr version 10.0.1
 frr defaults traditional
-hostname ce1
+hostname ce3
 log syslog informational
-ipv6 forwarding
 service integrated-vtysh-config
+ipv6 forwarding
 !
 router bgp 1003
  no bgp ebgp-requires-policy
