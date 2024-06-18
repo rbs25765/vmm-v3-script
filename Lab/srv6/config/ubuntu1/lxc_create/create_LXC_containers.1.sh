@@ -161,8 +161,7 @@ lxc query --request PATCH /1.0/instances/${i}evpn1 --data '{
      "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs1",
-       "vlan": "103",
+       "parent": "pe11gev103",
        "type": "nic"
    }
   }
@@ -177,8 +176,7 @@ lxc query --request PATCH /1.0/instances/${i}evpn1 --data '{
      "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs3",
-       "vlan": "103",
+       "parent": "pe12gev103",
        "type": "nic"
    }
   }
@@ -194,8 +192,7 @@ lxc query --request PATCH /1.0/instances/ce1 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs1",
-       "vlan" : "101",
+       "parent": "pe11gev101",
        "type": "nic"
     },
     "eth1" :{
@@ -213,8 +210,7 @@ lxc query --request PATCH /1.0/instances/ce2 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs3",
-       "vlan" : "101",
+       "parent": "pe12gev101",
        "type": "nic"
     },
     "eth1" :{
@@ -232,8 +228,7 @@ lxc query --request PATCH /1.0/instances/ce3 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs1",
-       "vlan" : "102",
+       "parent": "pe11gev102",
        "type": "nic"
     },
     "eth1" :{
@@ -251,8 +246,7 @@ lxc query --request PATCH /1.0/instances/ce4 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs3",
-       "vlan" : "102",
+       "parent": "pe12gev102",
        "type": "nic"
     },
     "eth1" :{
@@ -270,8 +264,7 @@ lxc query --request PATCH /1.0/instances/ce5 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs1",
-       "vlan" : "104",
+       "parent": "pe11gev104",
        "type": "nic"
     },
     "eth1" :{
@@ -289,8 +282,7 @@ lxc query --request PATCH /1.0/instances/ce6 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs3",
-       "vlan" : "104",
+       "parent": "pe12gev104",
        "type": "nic"
     },
     "eth1" :{
@@ -309,8 +301,7 @@ lxc query --request PATCH /1.0/instances/ce7 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs1",
-       "vlan" : "105",
+       "parent": "pe11gev105",
        "type": "nic"
     },
     "eth1" :{
@@ -328,8 +319,7 @@ lxc query --request PATCH /1.0/instances/ce8 --data '{
     "eth0" :{
        "name": "eth0",
        "nictype": "bridged",
-       "parent": "ovs3",
-       "vlan" : "105",
+       "parent": "pe12gev105",
        "type": "nic"
     },
     "eth1" :{

@@ -56,7 +56,7 @@
 
         sudo apt -y update 
         sudo apt -y upgrade
-        sudo apt install bridge-utils
+        sudo apt -y install bridge-utils openvswitch-switch openvswitch-common
 
 3. update lxd on ubuntu1
 
@@ -126,7 +126,7 @@
         lxc exec client sh
         apk update
         apk ugprade
-        apk add iperf3 iperf openssh
+        apk add iperf3 iperf openssh python3
 
 2. Create ssh key for ssh server, and set ssh and frr to run at startup
 
