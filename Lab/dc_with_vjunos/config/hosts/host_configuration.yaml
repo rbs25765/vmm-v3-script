@@ -11,7 +11,7 @@ network:
       dhcp4: no
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:72:15
+      macaddress: 56:04:1b:00:81:dc
       interfaces:
         - eth0
         - eth1
@@ -19,7 +19,6 @@ network:
          mode: 802.3ad
       addresses: [ 192.168.101.1/24, fc00:dead:beef:a101::1000:1/64]
       gateway4: 192.168.101.254
-      gate
       nameservers:
         addresses: [8.8.8.8,8.8.4.4]
 EOF
@@ -39,14 +38,14 @@ network:
       dhcp4: no
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:3e:cd
+      macaddress: 56:04:1b:00:5d:43
       interfaces:
         - eth0
         - eth1
       parameters:
          mode: 802.3ad
-      addresses: [ 192.168.111.3/24, fc00:dead:beef:a111::1000:3/64]
-      gateway4: 192.168.111.254
+      addresses: [ 192.168.101.3/24, fc00:dead:beef:a101::1000:3/64]
+      gateway4: 192.168.101.254
       nameservers:
         addresses: [8.8.8.8,8.8.4.4]
 EOF
@@ -89,14 +88,14 @@ network:
       dhcp4: no
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:37:e4
+      macaddress: 56:04:1b:00:20:97
       interfaces:
         - eth0
         - eth1
       parameters:
          mode: 802.3ad
-      addresses: [ 192.168.112.2/24, fc00:dead:beef:a112::1000:2/64]
-      gateway4: 192.168.112.254
+      addresses: [ 192.168.102.2/24, fc00:dead:beef:a102::1000:2/64]
+      gateway4: 192.168.102.254
       nameservers:
         addresses: [8.8.8.8,8.8.4.4]
 EOF
@@ -116,18 +115,19 @@ network:
       dhcp4: no
   bonds:
     bond0:
-      macaddress: 56:04:17:00:a9:b7
+      macaddress: 56:04:1b:00:61:96
       interfaces:
         - eth0
         - eth1
       parameters:
          mode: 802.3ad
-      addresses: [ 192.168.130.10/24, fc00:dead:beef:a130::1000:10/64]
-      gateway4: 192.168.130.254
-      gateway6:  fc00:dead:beef:a130::1
+      addresses: [ 192.168.13.4/24, fc00:dead:beef:0a13::1000:4/64]
+      gateway4: 192.168.13.254
+      gateway6:  fc00:dead:beef:0a13::1
       nameservers:
         addresses: [8.8.8.8,8.8.4.4]
 EOF
+uuidgen | sed -e "s/-//g" | sudo tee /etc/machine-id
 
 
 sudo hostname svr3
@@ -157,29 +157,26 @@ EOF
 
 sudo hostname kvm1
 hostname | sudo tee /etc/hostname
-cat << EOF | sudo tee /etc/netplan/01_net.yaml
+cat << EOF | sudo tee /etc/netplan/02_net.yaml
 network:
   ethernets:
-    eth0:
-      dhcp4: no
     eth1:
       dhcp4: no
-  bridges:
-    ovs1:
       mtu: 9000
-      addresses: [ 192.168.111.11/24, fc00:dead:beef:a111::1000:11/64]
-      gateway4: 192.168.111.254
-      nameservers:
-        addresses: [8.8.8.8,8.8.4.4]
+    eth2:
+      dhcp4: no
+      mtu: 9000
+  bridges:
+    ovs0:
       openvswitch: {}
       interfaces:
       - bond0
   bonds:
     bond0:
-      macaddress: 56:04:17:00:51:01
+      macaddress: 56:04:1b:00:80:7e
       interfaces:
-        - eth0
         - eth1
+        - eth2
       parameters:
          mode: 802.3ad
 EOF

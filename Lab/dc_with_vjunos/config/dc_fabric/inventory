@@ -11,15 +11,5 @@ dc1leaf5
 dc1leaf6
 dc1leaf7
 dc1leaf8
-dc3spine1
-dc3spine2
-dc3leaf1
-dc3leaf2
-dc3leaf3
-dc3leaf4
-dc3leaf5
-dc3leaf6
-dc2sw1
-dc2sw2
 [all:vars]
 ansible_python_interpreter=python3

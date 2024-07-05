@@ -35,10 +35,14 @@ junos_login:
 # snmp: 
 #   server: 172.16.255.4
 #   ro_community: public
-# fabric:
-#   subnet: 10.100.0.0/24
-#   subnet6: fc00:dead:beef:a101::/64
-#   topology:
+fabric:
+  #subnet: 10.100.0.0/24
+  subnet6: fc00:dead:beef:a101::/64
+  topology:
+  - [ 0x16, pe11, ge-0/0/1, p1, ge-0/0/0 ]
+  - [ 0x16, pe11, ge-0/0/2, p2, ge-0/0/0 ]
+  - [ 0x16, pe12, ge-0/0/1, p1, ge-0/0/1 ]
+  - [ 0x16, pe12, ge-0/0/2, p2, ge-0/0/1 ]
 #   # there are five field: status, VM node A, interface of node A, VM node Z, interface of node Z
 #   # value for the field status:
 #   # bit 0 : ipv4
@@ -49,6 +53,7 @@ junos_login:
 #   # bit 5 : rsvp
 #   # bit 6 : ldp
 #   # bit 7 : delay_measurement_rpm
+#   # bit 8 : mtu
 #   # 0x3d means enable family ipv4, iso and mpls, and enable protocol isis and rsvp
 #   # 0xbd means enable family ipv4, iso and mpls, and enable protocol isis and rsvp, and delay measurement using RPM
 #   # ingress controller: 172.16.255.1
@@ -92,67 +97,48 @@ vm:
         family:
           inet: 172.16.10.254/24
         dhcp_range: 172.16.10.5-172.16.10.100
-      # em2: 
-      #   bridge: control
-      #   family:
-      #     inet: 172.16.11.1/24
-      #   dhcp_range: 172.16.11.10-172.16.11.30
-      #   # dhcp_range: 172.16.11.2-172.16.11.6
-      # # em3: 
-      # #   bridge: desktop
-      # #   family:
-      # #     inet: 172.16.12.1/24
-      # #   dhcp_range: 172.16.12.10-172.16.12.20
-      # em3: 
-      #   bridge: pce
-      #   family:
-      #     inet: 172.16.14.0/31
-      #     static:
-      #     - to: 10.100.0.0/24
-      #       via: 172.16.14.1
-      #     - to: 10.100.1.0/24
-      #       via: 172.16.14.1
   pe11:
     type: vjunos_router
     os: vjunos_router
     ztp: yes
+    router-id: 192.168.0.11
+    srv6-locator: bad:feed:0:11::/64
     interfaces:
       mgmt: 
         bridge: mgmt
         family:
           inet: 172.16.10.1/24
           gateway4: 172.16.10.254
+      lo0:
+        family:
+          inet6: bad:cafe::11/128
+          iso:  49.0001.1921.6800.0011.00
+        protocol:
+          isis: passive
       ge-0/0/0:
         bridge: pe11ge0
-        mtu: 9000
-      ge-0/0/1:
-        bridge: pe11ge1
-        mtu: 9000
-      ge-0/0/2:
-        bridge: pe11p1
-        mtu: 9000
-      ge-0/0/3:
-        bridge: pe11p2
         mtu: 9000
   p1:
     type: vjunos_router
     os: vjunos_router
     ztp: yes
+    router-id: 192.168.0.1
     interfaces:
       mgmt: 
         bridge: mgmt
         family:
           inet: 172.16.10.2/24
           gateway4: 172.16.10.254
-      ge-0/0/0:
-        bridge: pe11p1
-        mtu: 9000
-      ge-0/0/1:
-        bridge: pe12p1
-        mtu: 9000
+      lo0:
+        family:
+          inet6: bad:cafe::1/128
+          iso:  49.0001.1921.6800.0001.00
+        protocol:
+          isis: passive
   p2:
     type: vjunos_router
     os: vjunos_router
+    router-id: 192.168.0.2
     ztp: yes
     interfaces:
       mgmt: 
@@ -160,33 +146,32 @@ vm:
         family:
           inet: 172.16.10.3/24
           gateway4: 172.16.10.254
-      ge-0/0/0:
-        bridge: pe11p2
-        mtu: 9000
-      ge-0/0/1:
-        bridge: pe12p2
-        mtu: 9000
+      lo0:
+        family:
+          inet6: bad:cafe::2/128
+          iso:  49.0001.1921.6800.0002.00
+        protocol:
+          isis: passive
   pe12:
     type: vjunos_router
     os: vjunos_router
     ztp: yes
+    router-id: 192.168.0.12
+    srv6-locator: bad:feed:0:12::/64
     interfaces:
       mgmt: 
         bridge: mgmt
         family:
           inet: 172.16.10.4/24
           gateway4: 172.16.10.254
+      lo0:
+        family:
+          inet6: bad:cafe::12/128
+          iso:  49.0001.1921.6800.0012.00
+        protocol:
+          isis: passive
       ge-0/0/0:
         bridge: pe12ge0
-        mtu: 9000
-      ge-0/0/1:
-        bridge: pe12ge1
-        mtu: 9000
-      ge-0/0/2:
-        bridge: pe12p1
-        mtu: 9000
-      ge-0/0/3:
-        bridge: pe12p2
         mtu: 9000
   ubuntu1:
     type: pchpv1
@@ -202,11 +187,5 @@ vm:
         bridge: pe11ge0
         mtu: 9000
       em2:
-        bridge: pe11ge1
-        mtu: 9000
-      em3:
         bridge: pe12ge0
-        mtu: 9000
-      em4:
-        bridge: pe12ge1
         mtu: 9000

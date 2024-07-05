@@ -2,17 +2,17 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.opentofu.org/juniper/apstra" {
-  version = "0.58.0"
+  version = "0.58.3"
   hashes = [
-    "h1:IrVtLqWdUWfVDpTES4hs9rviKs3eCn8V8lg5Log3Pso=",
-    "zh:33e3d952ba6c068f21651750ae5575322a06f9f9bba82b2bb5d8e354dc8ecf97",
-    "zh:362f681ef00edd0c18f6d525dd7c819dc6e4bad39f68f26d7dacd1f8d8858553",
-    "zh:45c1e2c9df7a23275144aa9500be3980d3204c3161f64e675df44143d4b4c886",
-    "zh:63de5ef8636694e53b7122ba1bcf659f533fccf5fad1529334daaa8ba3bd3f01",
-    "zh:931d423d147ab210efd3afe76f2a2134baaa293c8fad56b9ffdb18702175f711",
-    "zh:9945009b87e371eae231b28221e3bd71abb3a06600f4e55c0ec988e7289cae41",
-    "zh:b4bba8994fd891c15f1bfc32fcf0c1edc426ee57b2abd6b27fca429ea3eb3f53",
-    "zh:cfeff978aadb8df9563dad97ab6d86419c8ade950538dc3efb844bea41586aae",
+    "h1:01e0FvHgyKpvZZon+PBuvvMTjSzvtZjYrJd37Qsx2ek=",
+    "zh:2c0800432b61917f79a7c8964f141a1d1eb8ae39c1b987fe5274a33e337a09bd",
+    "zh:37befb2ad0b56fc79511ece7e51fc9e82a699f9791adc34145ddcfa2cb407291",
+    "zh:50511d597dbe28fe36b2e70d60e9d220f17bd1ce0cc694f4ecc47e70a19b99e8",
+    "zh:8ceafb6adf661797def90eb544fb77e0bcb2e6eb7f91625f57040bd39c1ab1b6",
+    "zh:94339d149e54fcdecde2f4cfc4b9840e045a52ddfd08cd55307477d8c1ff432d",
+    "zh:a552f94988f271e2f9216768905d4605b6b300577b54e5328291f27b06f5af5a",
+    "zh:ba7aaee1727fd06db68f13d52d47c42bbc0295e661dd9fce12d250fdc897f8a3",
+    "zh:c66e5f1faab4c787561eefd3000565be7ef60d1342cb01d5c59395571e925016",
     "zh:f809ab383cca0a5f83072981c64208cbd7fa67e986a86ee02dd2c82333221e32",
   ]
 }

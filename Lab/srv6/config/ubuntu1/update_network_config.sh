@@ -13,9 +13,9 @@ network:
     ovs1:
       openvswitch: {}
       interfaces: [eth1]
-    ovs3:
+    ovs2:
       openvswitch: {}
-      interfaces: [eth3]
+      interfaces: [eth2]
 EOF
 
 sudo netplan apply

@@ -136,6 +136,78 @@ def get_list_asn_pools():
                     print(f"start {j['first']}, last {j['last']}")
     else:
         print("no token")
+## rack type
+
+def get_list_rack_types():
+    d1=get_token()
+    #print("token value ",d1)
+    if d1 != "":
+        URL=f"https://{d1['ip']}/api/design/rack-types"
+        token = {'AuthToken': d1['token']}
+        r=requests.get(URL,verify=False,headers=token)
+        if r.status_code == 200:
+            #print(r.json())
+            rack_types=r.json()['items']
+            for i in rack_types:
+                # print(f"device_profile {i['display_name']}")
+                print(f"device_profile {i['display_name']}")
+    else:
+        print("no token")
+
+
+def get_id_rack_type(rack_name):
+    d1=get_token()
+    URL=f"https://{d1['ip']}/api/design/rack-types"
+    token = {'AuthToken': d1['token']}
+    r=requests.get(URL,verify=False,headers=token)
+    if r.status_code == 200:
+        rack_types=r.json()['items']
+        found=False
+        for i in rack_types:
+            if i['display_name'] == rack_name:
+                found=True
+                retval = i['id']
+                break
+        if found:
+            return retval
+        else: 
+            return ""
+
+## device profiles
+def get_list_device_profiles():
+    d1=get_token()
+    #print("token value ",d1)
+    if d1 != "":
+        URL=f"https://{d1['ip']}/api/device-profiles"
+        token = {'AuthToken': d1['token']}
+        r=requests.get(URL,verify=False,headers=token)
+        if r.status_code == 200:
+            #print(r.json())
+            device_profiles=r.json()['items']
+            for i in device_profiles:
+                # print(f"device_profile {i['display_name']}")
+                print(f"rack type {i['display_name']}")
+    else:
+        print("no token")
+
+def get_id_device_profiles(deviceprofile):
+    d1=get_token()
+    URL=f"https://{d1['ip']}/api/device-profiles"
+    token = {'AuthToken': d1['token']}
+    r=requests.get(URL,verify=False,headers=token)
+    if r.status_code == 200:
+        device_profiles=r.json()['items']
+        found=False
+        for i in device_profiles:
+            if i['label'] == deviceprofile:
+                found=True
+                retval = i['id']
+                break
+        if found:
+            return retval
+        else: 
+            return ""
+
 
 ## IP pools
 def get_list_ip_pools():

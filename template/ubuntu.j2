@@ -1,7 +1,7 @@
 #!/bin/bash
 cat << EOF | sudo tee /etc/hosts
 127.0.0.1 localhost
-127.0.1.1 {{ hostname }}
+{{dns_ip}} {{ hostname }}
 
 # The following lines are desirable for IPv6 capable hosts
 ::1 ip6-localhost ip6-loopback
@@ -16,6 +16,7 @@ cat << EOF | sudo tee /etc/hostname
 {{ hostname }}
 EOF
 
+sudo hostname {{ hostname }}
 
 cat << EOF | tee ~/.ssh/authorized_keys
 {{ ssh_key_pub }}
@@ -72,4 +73,13 @@ EOF
 chmod og-rwx ~/.ssh/*
 
 sleep 2 
+
+sudo systemctl stop sshd
+sudo rm /etc/ssh/ssh_host*
+sudo ssh-keygen -q -f /etc/ssh/ssh_host_key -N '' -t rsa1
+sudo ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
+sudo ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
+sudo ssh-keygen -f /etc/ssh/ssh_host_ecdsa_key -N '' -t ecdsa -b 521
+sudo systemctl restart sshd
+
 sudo reboot

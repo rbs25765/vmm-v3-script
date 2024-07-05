@@ -199,9 +199,13 @@ interfaces {
             }
         {% endif -%}
         {% if interfaces[intf].inet6 -%}
+            {% if interfaces[intf].inet6 != "inet6" -%}
             family inet6 {
                 address {{interfaces[intf].inet6}};
             }
+            {% else -%}
+            family inet6;
+            {% endif -%}
         {% endif -%}
         {% if interfaces[intf].mpls -%}
             family mpls;
@@ -226,6 +230,17 @@ protocols {
         {% for prot in protocols -%}
             {{prot}} {
                 {% if protocols[prot] -%}
+                {% if prot == 'isis' -%}
+                {% if srv6_locator -%}
+                source-packet-routing {
+                    srv6 {
+                        locator SRV6-LOC-1 {
+                            end-sid {{srv6_end_sid}};
+                        }
+                    }
+                }
+                {%endif -%}
+                {% endif -%}
                 {% for intf in protocols[prot] -%}
                 {% if prot == 'lldp' -%}
                 {% if intf != 'lo0' -%}
@@ -236,14 +251,7 @@ protocols {
                 {% if protocols[prot][intf] -%}
                     interface  {{intf}}.0 {
                         {{ protocols[prot][intf] }};
-                        level 1 disable;
-                        {% if intf != 'lo0' %}
-                            family inet {
-                                    bfd-liveness-detection {
-                                        minimum-interval 100;
-                                    }
-                                }
-                        {% endif -%}         
+                        level 1 disable;     
                     }
                 {% else -%}
                 interface  {{intf}}.0;
@@ -260,7 +268,16 @@ protocols {
 }
 protocols {
    lldp {
-      delete: interface all;
+      interface all;
+      {% if type == 'vjunos_evolved' -%}
+      interface re0:mgmt-0 {
+        disable;
+      }
+      {% else -%}
+      interface fxp0 {
+        disable;
+      }
+      {% endif -%}
    }
 }
 {% endif -%}
@@ -269,8 +286,30 @@ protocols {
 routing-options {
     router-id {{ router_id}};
     route-distinguisher-id {{router_id}};
+    {%if srv6_locator -%}
+    source-packet-routing {
+        srv6 {
+            locator SRV6-LOC-1 {{srv6_locator}};
+        }
+    }
+    {%endif%}
+    forwarding-table {
+        export LB;
+    }
+}
+policy-options {
+    policy-statement LB {
+        term 1 {
+            then {
+                load-balance per-flow;
+                accept;
+            }
+        }
+    }
 }
 {% endif -%}
+
+
 
 {% if bgpls -%}
 routing-options {

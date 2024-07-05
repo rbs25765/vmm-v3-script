@@ -104,15 +104,19 @@ def print_data(d1):
 	print(yaml.dump(d1))
 
 def num_link_with_ip(d1):
-	retval=0
+	retval4=0
+	retval6=0
 	for i in d1['fabric']['topology']:
-		if i[0] != 0x0:
-			retval+=1
-	return retval
+		if i[0] & param1.mask_ipv4:
+			retval4+=1
+		if i[0] & param1.mask_ipv6:
+			retval6+=1
+	return retval4, retval6
 
 def read_config(config):
 	d1={}
 	config_file = config['config_file']
+	status=0
 	try:
 		# f1=open(config_file)
 		# d1=yaml.load(f1,Loader=yaml.FullLoader)
@@ -123,23 +127,48 @@ def read_config(config):
 		add_path(d1,config['path'])
 		if 'fabric' in d1.keys():
 			#num_link = len(d1['fabric']['topology'])
-			num_link = num_link_with_ip(d1)
-			pref_len = 32 - int(d1['fabric']['subnet'].split('/')[1])
-			pref_len6 = 128 - int(d1['fabric']['subnet6'].split('/')[1])
-			num_subnet = int( (2 **  pref_len) / 2)
-			num_subnet6 = int( (2 **  pref_len6) / 2)
-			#print(f"num_link {num_link} num_subnet {num_subnet} num_subnet6 {num_subnet6}")
-			#exit(1)
-			if (num_link > num_subnet) or (num_link > num_subnet6) :
-				print(f"not enough ip address for fabric link\nnum of link {num_link}, num of subnet {num_subnet}, num of subnet6 {num_subnet6}" )
+			num_link, num_link6 = num_link_with_ip(d1)
+			# print(f"num_link {num_link}")
+			if num_link == 0:
+				#print("num_link 0")
+				status = 0
+			elif (num_link > 0) and ('subnet' not in d1['fabric'].keys()):
+				print("subnet for fabric is not defined on lab.yaml")
 				exit(1)
-			elif check_ip(d1):
-				print("wrong subnet allocation")
-				print(f"subnet {d1['fabric']['subnet'].split('/')[0]} can't be used with prefix {d1['fabric']['subnet'].split('/')[1]}")
-			#elif not check_vm(d1):
-			#	print("number of VM on topology doesn't match with on configuration")
-			else:
-				create_config_interfaces(d1)
+			elif (num_link > 0) and ('subnet' in d1['fabric'].keys()):
+				pref_len = 32 - int(d1['fabric']['subnet'].split('/')[1])
+				#pref_len6 = 128 - int(d1['fabric']['subnet6'].split('/')[1])
+				num_subnet = int( (2 **  pref_len) / 2)
+				#num_subnet6 = int( (2 **  pref_len6) / 2)
+				#print(f"num_link {num_link} num_subnet {num_subnet} num_subnet6 {num_subnet6}")
+				#exit(1)
+				if (num_link > num_subnet):
+					print(f"not enough ip address for fabric link\nnum of link {num_link}, num of subnet {num_subnet}" )
+					exit(1)
+				elif check_ip(d1):
+					print("wrong subnet allocation")
+					print(f"subnet {d1['fabric']['subnet'].split('/')[0]} can't be used with prefix {d1['fabric']['subnet'].split('/')[1]}")
+				#elif not check_vm(d1):
+				#	print("number of VM on topology doesn't match with on configuration")
+				else:
+					status=1
+			# if num_link6 > 0:
+			# 	if 'subnet6' in d1['fabric'].keys():
+			# 		pref_len6 = 128 - int(d1['fabric']['subnet6'].split('/')[1])
+			# 		num_subnet6 = int( (2 **  pref_len6) / 2)
+			# 	#print(f"num_link {num_link} num_subnet {num_subnet} num_subnet6 {num_subnet6}")
+			# 	#exit(1)
+			# 		if (num_link6 > num_subnet6):
+			# 			print(f"not enough ip address for fabric link\nnum of link {num_link}, num of subnet {num_subnet}" )
+			# 			exit(1)
+			# 		# elif check_ip(d1):
+			# 		# 	print("wrong subnet allocation")
+			# 		# 	print(f"subnet {d1['fabric']['subnet'].split('/')[0]} can't be used with prefix {d1['fabric']['subnet'].split('/')[1]}")
+			# 		#elif not check_vm(d1):
+			# 		#	print("number of VM on topology doesn't match with on configuration")
+			# 	status=1
+			# if status:
+			create_config_interfaces(d1)
 		change_gateway4(d1)
 		change_ztp(d1)
 		adpassword_env=os.getenv('ADPASSWORD')
@@ -220,25 +249,62 @@ def change_gateway4(d1):
 								d1['vm'][i]['interfaces'][j]['family']['static']=[{'to':'::/0','via': d1['vm'][i]['interfaces'][j]['family']['gateway6']}]
 							d1['vm'][i]['interfaces'][j]['family'].pop('gateway6')
 		#print(d1['vm'][i])
-							
+
+def ipv4_to_int(ipv4):
+	b1,b2,b3,b4 = ipv4.split('/')[0].split('.')
+	retval = (int(b1) << 24) + (int(b2) << 16) + (int(b3) << 8) + int(b4)
+	return retval
 
 def create_config_interfaces(d1):
 	num_link = len(d1['fabric']['topology'])
-	#num_link = num_link_with_ip(d1)
-	b1,b2,b3,b4 = d1['fabric']['subnet'].split('/')[0].split('.')
-	start_ip = (int(b1) << 24) + (int(b2) << 16) + (int(b3) << 8) + int(b4)
 	for i in range(num_link):
 		br='ptp' + str(i)
 		d1['fabric']['topology'][i].append(br)
-		if d1['fabric']['topology'][i][0]:
-			if d1['fabric']['topology'][i][0] & param1.mask_ipv4:
-				d1['fabric']['topology'][i].append(bin2ip(start_ip))
-				start_ip += 1
-				d1['fabric']['topology'][i].append(bin2ip(start_ip))
-				start_ip += 1
-			else:
+	#print("checkpoint 1")
+	#num_link = num_link_with_ip(d1)
+	if 'subnet' in d1['fabric']:
+		# b1,b2,b3,b4 = d1['fabric']['subnet'].split('/')[0].split('.')
+		# start_ip = (int(b1) << 24) + (int(b2) << 16) + (int(b3) << 8) + int(b4)
+		start_ip=ipv4_to_int(d1['fabric']['subnet'])
+		for i in range(num_link):
+			if d1['fabric']['topology'][i][0]:
+				if d1['fabric']['topology'][i][0] & param1.mask_ipv4:
+					d1['fabric']['topology'][i].append(bin2ip(start_ip))
+					start_ip += 1
+					d1['fabric']['topology'][i].append(bin2ip(start_ip))
+					start_ip += 1
+				else:
+					d1['fabric']['topology'][i].append('0')
+					d1['fabric']['topology'][i].append('0')
+	else:
+		for i in range(num_link):
+			if d1['fabric']['topology'][i]:
 				d1['fabric']['topology'][i].append('0')
 				d1['fabric']['topology'][i].append('0')
+	if 'subnet6' in d1['fabric']:
+		start_ip=0
+		ipv6_address=d1['fabric']['subnet6'].split('/')[0]
+		for i in range(num_link):
+			if d1['fabric']['topology'][i][0]:
+				if d1['fabric']['topology'][i][0] & param1.mask_ipv6:
+					d1['fabric']['topology'][i].append(to_ipv6(ipv6_address,start_ip))
+					start_ip += 1
+					d1['fabric']['topology'][i].append(to_ipv6(ipv6_address,start_ip))
+					start_ip += 1
+				else:
+					d1['fabric']['topology'][i].append('0')
+					d1['fabric']['topology'][i].append('0')
+	else:
+		for i in range(num_link):
+			if d1['fabric']['topology'][i]:
+				if d1['fabric']['topology'][i][0] & param1.mask_ipv6:
+					d1['fabric']['topology'][i].append('inet6')
+					d1['fabric']['topology'][i].append('inet6')
+				else:
+					d1['fabric']['topology'][i].append('0')
+					d1['fabric']['topology'][i].append('0')
+		# print(d1['fabric'])
+	# exit(1)
 	list_vm = list_vm_from_fabric(d1)
 	# print(d1['fabric']['topology'])
 	# print(f"number of link {num_link}")
@@ -250,21 +316,32 @@ def create_config_interfaces(d1):
 		for j in d1['fabric']['topology']:
 			if j[1] == i:
 				d2['vm'][i]['interfaces'].update( {j[2]: {'bridge' : j[5]} })
+				if 'mtu' not in d2['vm'][i]['interfaces'][j[2]].keys():
+					d2['vm'][i]['interfaces'][j[2]].update({'mtu' : param1.mtu  })
+				else:
+					d2['vm'][i]['interfaces'][j[2]]['mtu'] = param1.mtu
+				if j[0] & param1.mask_iso:
+					if 'family' not in d2['vm'][i]['interfaces'][j[2]].keys():
+						d2['vm'][i]['interfaces'][j[2]].update({'family' : {'iso':None}})
+					else:
+						d2['vm'][i]['interfaces'][j[2]]['family'].update({'iso':None})
+					if j[0] & param1.mask_isis:
+						if 'protocol' not in d2['vm'][i]['interfaces'][j[2]].keys():
+							d2['vm'][i]['interfaces'][j[2]].update({'protocol' : {'isis':'ptp'}})
+						else:
+							d2['vm'][i]['interfaces'][j[2]]['protocol'].update({'isis':'ptp'})
+				if j[0] & param1.mask_ipv6:
+					if 'family' not in d2['vm'][i]['interfaces'][j[2]].keys():
+						d2['vm'][i]['interfaces'][j[2]].update({'family' : {'inet6': j[8]}})
+					else:
+						d2['vm'][i]['interfaces'][j[2]]['family'].update({'inet6': j[8]})
+						
 				if j[0] & param1.mask_ipv4:
 					if 'family' not in d2['vm'][i]['interfaces'][j[2]].keys():
 						d2['vm'][i]['interfaces'][j[2]].update({'family' : {'inet': j[6]}})
 					else:
 						d2['vm'][i]['interfaces'][j[2]]['family'].update({'inet': j[6]})
-					if j[0] & param1.mask_iso:
-						if 'family' not in d2['vm'][i]['interfaces'][j[2]].keys():
-							d2['vm'][i]['interfaces'][j[2]].update({'family' : {'iso':None}})
-						else:
-							d2['vm'][i]['interfaces'][j[2]]['family'].update({'iso':None})
-						if j[0] & param1.mask_isis:
-							if 'protocol' not in d2['vm'][i]['interfaces'][j[2]].keys():
-								d2['vm'][i]['interfaces'][j[2]].update({'protocol' : {'isis':'ptp'}})
-							else:
-								d2['vm'][i]['interfaces'][j[2]]['protocol'].update({'isis':'ptp'})
+					
 					if j[0] & param1.mask_mpls:
 						if 'family' not in d2['vm'][i]['interfaces'][j[2]].keys():
 							d2['vm'][i]['interfaces'][j[2]].update({'family' : {'mpls':None}})
@@ -287,29 +364,38 @@ def create_config_interfaces(d1):
 							d2['vm'][i]['interfaces'][j[2]].update({'rpm' : {'source': src, 'destination': dst } })
 						else:
 							d2['vm'][i]['interfaces'][j[2]]['rpm'] = {'source': src, 'destination': dst }
-				if j[0] & param1.mtu:
-					if 'mtu' not in d2['vm'][i]['interfaces'][j[2]].keys():
-						d2['vm'][i]['interfaces'][j[2]].update({'mtu' : param1.mtu  })
-					else:
-						d2['vm'][i]['interfaces'][j[2]]['mtu'] = param1.mtu
+				# if j[0] & param1.mtu:
+				# 	if 'mtu' not in d2['vm'][i]['interfaces'][j[2]].keys():
+				# 		d2['vm'][i]['interfaces'][j[2]].update({'mtu' : param1.mtu  })
+				# 	else:
+				# 		d2['vm'][i]['interfaces'][j[2]]['mtu'] = param1.mtu
 			elif j[3] == i:
 				d2['vm'][i]['interfaces'].update({j[4]: {'bridge' : j[5]} })
+				if 'mtu' not in d2['vm'][i]['interfaces'][j[4]].keys():
+					d2['vm'][i]['interfaces'][j[4]].update({'mtu' : param1.mtu  })
+				else:
+					d2['vm'][i]['interfaces'][j[4]]['mtu'] = param1.mtu
+				if j[0] & param1.mask_iso:
+					if 'family' not in d2['vm'][i]['interfaces'][j[4]].keys():
+						d2['vm'][i]['interfaces'][j[4]].update({'family' : {'iso':None}})
+					else:
+						d2['vm'][i]['interfaces'][j[4]]['family'].update({'iso':None})
+					if j[0] & param1.mask_isis:
+						if 'protocol' not in d2['vm'][i]['interfaces'][j[4]].keys():
+							d2['vm'][i]['interfaces'][j[4]].update({'protocol' : {'isis':'ptp'}})
+						else:
+							d2['vm'][i]['interfaces'][j[4]]['protocol'].update({'isis':'ptp'})
+				if j[0] & param1.mask_ipv6:
+					if 'family' not in d2['vm'][i]['interfaces'][j[4]].keys():
+						d2['vm'][i]['interfaces'][j[4]].update({'family' : {'inet6': j[9]}})
+					else:
+						d2['vm'][i]['interfaces'][j[4]]['family'].update({'inet6': j[9]})
 				if j[0] & param1.mask_ipv4:
 					if 'family' not in d2['vm'][i]['interfaces'][j[4]].keys():
 						d2['vm'][i]['interfaces'][j[4]].update({'family' : {'inet': j[7]}})
 					else:
 						d2['vm'][i]['interfaces'][j[4]]['family'].update({'inet': j[7]})
-					if j[0] & param1.mask_iso:
-						if 'family' not in d2['vm'][i]['interfaces'][j[4]].keys():
-							d2['vm'][i]['interfaces'][j[4]].update({'family' : {'iso':None}})
-						else:
-							d2['vm'][i]['interfaces'][j[4]]['family'].update({'iso':None})
-						if j[0] & param1.mask_isis:
-							if 'protocol' not in d2['vm'][i]['interfaces'][j[4]].keys():
-								d2['vm'][i]['interfaces'][j[4]].update({'protocol' : {'isis':'ptp'}})
-							else:
-								d2['vm'][i]['interfaces'][j[4]]['protocol'].update({'isis':'ptp'})
-
+					
 					if j[0] & param1.mask_mpls:
 						if 'family' not in d2['vm'][i]['interfaces'][j[4]].keys():
 							d2['vm'][i]['interfaces'][j[4]].update({'family' : {'mpls':None}})
@@ -333,11 +419,11 @@ def create_config_interfaces(d1):
 							d2['vm'][i]['interfaces'][j[4]].update({'rpm' : {'source': src, 'destination': dst } })
 						else:
 							d2['vm'][i]['interfaces'][j[4]]['rpm'] = {'source': src, 'destination': dst }
-				if j[0] & param1.mtu:
-					if 'mtu' not in d2['vm'][i]['interfaces'][j[4]].keys():
-						d2['vm'][i]['interfaces'][j[4]].update({'mtu' : param1.mtu  })
-					else:
-						d2['vm'][i]['interfaces'][j[4]]['mtu'] = param1.mtu
+				# if j[0] & param1.mtu:
+				# 	if 'mtu' not in d2['vm'][i]['interfaces'][j[4]].keys():
+				# 		d2['vm'][i]['interfaces'][j[4]].update({'mtu' : param1.mtu  })
+				# 	else:
+				# 		d2['vm'][i]['interfaces'][j[4]]['mtu'] = param1.mtu
 
 	for i in d2['vm'].keys():
 		intf = d2['vm'][i]['interfaces']
@@ -390,6 +476,15 @@ def bin2ip(ipbin):
 	b4=str(ipbin & m4)
 	retval = '.'.join((b1,b2,b3,b4)) + "/31"
 	#print(retval)
+	return retval
+
+def to_ipv6(ipv6_address,last_number):
+	ipv6_list=ipv6_address.split(":")
+	while("" in ipv6_list):
+		ipv6_list.remove("")
+	t1 = str(hex(last_number)).split('x')[1]
+	retval = ':'.join(ipv6_list) + "::" + t1 + "/127"
+
 	return retval
 
 
@@ -1233,6 +1328,7 @@ def set_host(d1,vm=""):
 		#print(f"host {i}")
 		vm_data={}
 		vm_data['net'],vm_data['bridge'] = get_net_config(d1,i)
+		vm_data['dns_ip']=get_dns_ip(d1,i)
 		# vm_data['ip_gw'] = d1['vm']['gw']['interfaces']['em1']['family']['inet'].split('/')[0]
 		vm_data['ssh_key_pub'] = d1['pod']['ssh_key_host']
 		vm_data['ssh_key_priv'] = d1['pod']['ssh_key_host_priv']
@@ -1275,6 +1371,12 @@ def set_host(d1,vm=""):
 			sftp.close()
 			ssh2host.close()
 	
+def get_dns_ip(d1,i):
+	retval='127.0.1.1'
+	if 'family' in d1['vm'][i]['interfaces']['em0'].keys():
+		if 'inet' in d1['vm'][i]['interfaces']['em0']['family'].keys():
+			retval = d1['vm'][i]['interfaces']['em0']['family']['inet'].split('/')[0]
+	return retval
 
 def get_gateway(d1,i):
 	retval=''
@@ -1913,24 +2015,31 @@ def create_junos_config(d1,i):
 			dummy1['mgmt_instc'] = 0
 	else:
 		dummy1['mgmt_instc'] = 1
-	if "lo0" in d1['vm'][i]['interfaces'].keys():
-		dummy1['router_id']  = d1['vm'][i]['interfaces']['lo0']['family']['inet'].split('/')[0]
-		if 'bgpls' in d1['vm'][i].keys():
+	if 	'router-id' in d1['vm'][i].keys():	
+		dummy1['router_id']  = d1['vm'][i]['router-id']
+	if 	'srv6-locator' in d1['vm'][i].keys():
+		dummy1['srv6_locator'] = d1['vm'][i]['srv6-locator']
+		dummy1['srv6_end_sid'] = d1['vm'][i]['srv6-locator'].split('/')[0]
+	if 'bgpls' in d1['vm'][i].keys():
 			dummy1['bgpls']={'as' : d1['vm'][i]['bgpls']['as'],'local' : d1['vm'][i]['bgpls']['local']}
-		if 'pcep' in d1['vm'][i].keys():
-			if d1['vm'][i]['pcep']=='yes' or d1['vm'][i]['pcep']==True:
-				if 'pcep_server' in d1.keys():
-					dummy1['pcep']={'server': d1['pcep_server'],'local': d1['vm'][i]['interfaces']['lo0']['family']['inet'].split('/')[0] }
-		if 'snmp' in d1.keys():
-			dummy1['snmp'] = { 'server' : d1['snmp']['server'],'ro_comm' : d1['snmp']['ro_community'] }
-		if 'paragon_ingest' in d1.keys():
-			dummy1['ingest']={'ip' : d1['paragon_ingest'],'source': d1['vm'][i]['interfaces']['lo0']['family']['inet'].split('/')[0]}
+	if 'snmp' in d1.keys():
+		dummy1['snmp'] = { 'server' : d1['snmp']['server'],'ro_comm' : d1['snmp']['ro_community'] }
+	if "lo0" in d1['vm'][i]['interfaces'].keys():
+		if 'family' in d1['vm'][i]['interfaces']['lo0'].keys():
+			if 'inet' in d1['vm'][i]['interfaces']['lo0']['family'].keys():
+				dummy1['router_id']  = d1['vm'][i]['interfaces']['lo0']['family']['inet'].split('/')[0]
+				if 'paragon_ingest' in d1.keys():
+					dummy1['ingest']={'ip' : d1['paragon_ingest'],'source': d1['vm'][i]['interfaces']['lo0']['family']['inet'].split('/')[0]}
+				if 'pcep' in d1['vm'][i].keys():
+					if d1['vm'][i]['pcep']=='yes' or d1['vm'][i]['pcep']==True:
+						if 'pcep_server' in d1.keys():
+							dummy1['pcep']={'server': d1['pcep_server'],'local': d1['vm'][i]['interfaces']['lo0']['family']['inet'].split('/')[0] }
 	for j in d1['vm'][i]['interfaces'].keys():
 		if j != 'mgmt':
 			if j[0:2] not in  [ 'em','vi']:
 				#if 'mtu' in  d1['vm'][i]['interfaces'][j].keys():
 				#	add_mtu(dummy1,j,d1['vm'][i]['interfaces'][j]['mtu'])
-				add_into_protocols(dummy1,'lldp',j,"")
+				#add_into_protocols(dummy1,'lldp',j,"")
 				if 'mtu' in d1['vm'][i]['interfaces'][j].keys():
 					add_mtu(dummy1,j,d1['vm'][i]['interfaces'][j]['mtu'])
 				if 'family' in d1['vm'][i]['interfaces'][j].keys():

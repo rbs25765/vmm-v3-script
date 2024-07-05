@@ -89,8 +89,8 @@
 
         lxc exec router sh
         apk update
-        apk ugprade
-        apk add frr openssh  dhcp-server radvd
+        apk upgrade
+        apk add frr openssh  dhcp-server radvd curl python3
 
 3. Create ssh key for ssh server, and set ssh and frr to run at startup
 
@@ -100,6 +100,8 @@
         rc-update add frr
         rc-update add dhcpd
         rc-update add radvd
+        service sshd start
+        ssh localhost
 
 
 4. Edit file /etc/frr/daemons and change entry bgpd=no to bgpd=yes
@@ -126,7 +128,7 @@
         lxc exec client sh
         apk update
         apk ugprade
-        apk add iperf3 iperf openssh python3
+        apk add iperf3 iperf openssh python3 curl
 
 2. Create ssh key for ssh server, and set ssh and frr to run at startup
 
