@@ -6,7 +6,7 @@
     - juniper.junos
   vars:
     username: admin
-    backup_dir: "./router_backup_srv6"
+    backup_dir: "./model1"
     conf_file: "{{ backup_dir }}/{{ inventory_hostname }}.conf"
   connection: local
   gather_facts: no

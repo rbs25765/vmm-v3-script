@@ -39,3 +39,5 @@ rm ~/.ssh/*
 
 sudo mkfs.ext4 /dev/sda2
 sudo mkfs.ext4 /dev/sda3
+
+ss

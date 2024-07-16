@@ -39,6 +39,13 @@
       dest: /tmp/create_part.sh
       content: |
         #!/bin/bash
+        # sudo systemctl stop sshd
+        # sudo rm /etc/ssh/ssh_host*
+        # sudo ssh-keygen -q -f /etc/ssh/ssh_host_key -N '' -t rsa1
+        # sudo ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
+        # sudo ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
+        # sudo ssh-keygen -f /etc/ssh/ssh_host_ecdsa_key -N '' -t ecdsa -b 521
+        # sudo systemctl restart sshd
         sudo mkdir /var/lib/docker
         sudo mkdir /mnt/longhorn
         echo "n

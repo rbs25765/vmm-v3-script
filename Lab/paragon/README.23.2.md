@@ -203,7 +203,7 @@ this ansible playbook will configure the paragon nodes according to the followin
 
 ![run_conf.png](images/pa23.2.conf.3.jpg)
 
-8. Edit file Paragon23.2/config.yml, and enable parameter to enable BGP for Metallb.
+8. Edit file configdir/config.yml, and enable parameter to enable BGP for Metallb.
 
 change the following 
 

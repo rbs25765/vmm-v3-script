@@ -37,7 +37,7 @@ snmp:
   ro_community: public
 fabric:
   subnet: 10.100.0.0/24
-  subnet6: fc00:dead:beef:a101::/64
+  #subnet6: fc00:dead:beef:a101::/64
   topology:
   # there are five field: status, VM node A, interface of node A, VM node Z, interface of node Z
   # value for the field status:

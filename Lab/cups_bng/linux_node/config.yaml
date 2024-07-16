@@ -19,25 +19,25 @@ nodes:
   # Controlplane node details
   # Controlplane nodes are also worker and etcd nodes implicitly
   - hostname: 172.16.11.111  # controlplane.example.com
-    user: admin  # admin
+    user: ubuntu  # ubuntu
     sudoPassword: pass01  # secret - Password for the sudo command on the node
     role: controlplane
     port: 22  # SSH port number
 
   - hostname: 172.16.11.112  # controlplane.example.com
-    user: admin  # admin
+    user: ubuntu  # ubuntu
     sudoPassword: pass01  # secret - Password for the sudo command on the node
     role: controlplane
     port: 22  # SSH port number
 
   - hostname: 172.16.11.113  # controlplane.example.com
-    user: admin  # admin
+    user: ubuntu  # ubuntu
     sudoPassword: pass01  # secret - Password for the sudo command on the node
     role: controlplane
     port: 22  # SSH port number
   # Worker node details
 #  - hostname: ~  # worker.example.com
-#    user: ~  # admin
+#    user: ~  # ubuntu
 #    sudoPassword: ~  # secret
 #    role: worker
 #    port: 22
