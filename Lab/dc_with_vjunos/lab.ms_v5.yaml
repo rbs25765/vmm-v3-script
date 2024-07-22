@@ -4,7 +4,6 @@ pod:
   type: vmm
   # if your account can access vmm lab directly, then you can comment out jumpserver
   #jumpserver: ttsv-shell110.juniper.net
-  #jumpserver: ttqc-shell001.juniper.net
   #vmmserver: q-pod27-vmm.englab.juniper.net
   vmmserver: q-pod27-vmm.englab.juniper.net
   #vmmserver: sv8-pod4-vmm.englab.juniper.net
@@ -18,17 +17,11 @@ images:
   gw: images/gw.qcow2
   ubuntu: images/ubuntu22.04.qcow2
   vsrx: images/junos-vsrx3-x86-64-23.4R1.9.qcow2
-  #vsrx: /volume/download/docroot/software/vsrx3.0/23.4R1/junos-vsrx3-x86-64-23.4R1.9.qcow2
   aos: images/aos_server_4.2.2-2.qcow2
   aos_ztp: images/apstra-ztp-4.2.1-21.qcow2
   aos_flow: images/apstra-flow-4.2.1-ubuntu-22.04-amd64-6.4.2.qcow2
-  #vjunos_switch: images/vJunos-switch-23.4R1.10.qcow2
   vjunos_switch: images/vJunos-switch-23.4R1.10.qcow2
-  #vjunos_switch: /volume/download/docroot/software/vJunos-switch/23.2R1/vJunos-switch-23.2R1.14.qcow2
-  #vjunos_router: /volume/download/docroot/software/vJunos-Router/23.2R1/vJunos-router-23.2R1.15.qcow2
-  #vjunos_evolved: images/vJunosEvolved-23.2R1-S1.8-EVO.qcow2
   vjunos_router: images/vJunos-router-23.4R1.10.qcow2
-  # vjunos_router: images/vJunos-router-23.4R1.10.qcow2
 junos_login:
   login: admin
   password: pass01
@@ -63,16 +56,17 @@ fabric:
     - [ 0x5d, pe2, ge-0/0/1, p1, ge-0/0/1 ]
     - [ 0x5d, pe3, ge-0/0/1, p1, ge-0/0/2 ]
     - [ 0x5d, pe4, ge-0/0/1, p1, ge-0/0/3 ]
-proxy:
-  forward:
-    - localPort: 9191
-      destPort: 443
-      destIP: 172.16.10.2
-  # DynForward: 1080
+# proxy:
+#   forward:
+#     - localPort: 9191
+#       destPort: 443
+#       destIP: 172.16.10.2
+#   # DynForward: 1080
 wg:
   gw_ip: 192.168.199.0/31
   ws_ip: 192.168.199.1/31
   prefix_allowed:
+  - 172.16.10.0/24
   - 172.16.11.0/24 
   - 172.16.12.0/24 
   - 172.16.13.0/24 
@@ -221,7 +215,7 @@ vm:
         bridge: d3l6p6
       ge-0/0/3: 
         bridge: vxgw
-  dc1spine1:
+  s1sw1:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -249,7 +243,7 @@ vm:
         bridge: d1s1p8
       ge-0/0/9: 
         bridge: d1s1p9
-  dc1spine2:
+  s1sw2:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -277,7 +271,7 @@ vm:
         bridge: d1s2p8
       ge-0/0/9: 
         bridge: d1s2p9
-  dc1spine3:
+  s1sw3:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -305,7 +299,7 @@ vm:
         bridge: d1s3p8
       ge-0/0/9: 
         bridge: d1s3p9
-  dc1spine4:
+  s1sw4:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -333,7 +327,7 @@ vm:
         bridge: d1s4p8
       ge-0/0/9: 
         bridge: d1s4p9
-  dc1leaf1:
+  s1sw5:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -361,7 +355,7 @@ vm:
         bridge: d1s3p0
       ge-0/0/9: 
         bridge: d1s4p0
-  dc1leaf2:
+  s1sw6:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -389,7 +383,7 @@ vm:
         bridge: d1s3p1
       ge-0/0/9: 
         bridge: d1s4p1
-  dc1leaf3:
+  s1sw7:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -417,7 +411,7 @@ vm:
         bridge: d1s3p2
       ge-0/0/9: 
         bridge: d1s4p2
-  dc1leaf4:
+  s1sw8:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -445,7 +439,7 @@ vm:
         bridge: d1s3p3
       ge-0/0/9: 
         bridge: d1s4p3
-  dc1leaf5:
+  s1sw9:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -473,7 +467,7 @@ vm:
         bridge: d1s3p4
       ge-0/0/9: 
         bridge: d1s4p4
-  dc1leaf6:
+  s1sw10:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -501,7 +495,7 @@ vm:
         bridge: d1s3p5
       ge-0/0/9: 
         bridge: d1s4p5
-  dc1leaf7:
+  s1sw11:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -529,7 +523,7 @@ vm:
         bridge: d1s3p6
       ge-0/0/9: 
         bridge: d1s4p6
-  dc1leaf8:
+  s1sw12:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -557,7 +551,7 @@ vm:
         bridge: d1s3p7
       ge-0/0/9: 
         bridge: d1s4p7
-  dc2sw1:
+  s2sw1:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -585,7 +579,7 @@ vm:
         bridge: d2sw1p8
       ge-0/0/9: 
         bridge: d2sw1p9
-  dc2sw2:
+  s2sw2:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -613,7 +607,7 @@ vm:
         bridge: d2sw2p8
       ge-0/0/9: 
         bridge: d2sw2p9
-  dc3spine1:
+  s3sw1:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -641,7 +635,7 @@ vm:
         bridge: d3s1p8
       ge-0/0/9: 
         bridge: d3s1p9
-  dc3spine2:
+  s3sw2:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -669,7 +663,7 @@ vm:
         bridge: d3s2p8
       ge-0/0/9: 
         bridge: d3s2p9
-  dc3leaf1:
+  s3sw3:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -697,7 +691,7 @@ vm:
         bridge: d3l1p8
       ge-0/0/9: 
         bridge: d3l1p9
-  dc3leaf2:
+  s3sw4:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -725,7 +719,7 @@ vm:
         bridge: d3l2p8
       ge-0/0/9: 
         bridge: d3l2p9
-  dc3leaf3:
+  s3sw5:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -753,7 +747,7 @@ vm:
         bridge: d3l3p8
       ge-0/0/9: 
         bridge: d3l3p9
-  dc3leaf4:
+  s3sw6:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -781,7 +775,7 @@ vm:
         bridge: d3l4p8
       ge-0/0/9: 
         bridge: d3l4p9
-  dc3leaf5:
+  ds3sw7:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -809,7 +803,7 @@ vm:
         bridge: d3l5p8
       ge-0/0/9: 
         bridge: d3l5p9
-  dc3leaf6:
+  ds3sw8:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:

@@ -39,7 +39,7 @@ def generate_wireguard_keys():
     pubkey = subprocess.check_output(f"echo '{privkey}' | wg pubkey", shell=True).decode("utf-8").strip()
     return [privkey, pubkey]
 
-def create_wg_config(d1):
+def get_wg_config(d1):
 	dummy1={}
 	gw_t1="""
 [Interface]
@@ -1806,19 +1806,19 @@ def write_ssh_config(d1):
 	print("getting gw ip address")
 	gw_ip = get_ip_vm(d1,'gw')
 	print(f"ip address gw {gw_ip}")
-	if 'proxy' in d1.keys():
-		if 'DynForward' in d1['proxy'].keys():
-			dyn_port = d1['proxy']['DynForward']
-		else:
-			dyn_port = 1080
-		list1=[]
-		if 'forward' in d1['proxy'].keys():
-			for j in d1['proxy']['forward']:
-				list1.append(f"{j['localPort']} {j['destIP']}:{j['destPort']}")
-		forward_port = list1
-	else:
-		dyn_port = 1080
-		forward_port=[]
+	# if 'proxy' in d1.keys():
+	# 	if 'DynForward' in d1['proxy'].keys():
+	# 		dyn_port = d1['proxy']['DynForward']
+	# 	else:
+	# 		dyn_port = 1080
+	# 	list1=[]
+	# 	if 'forward' in d1['proxy'].keys():
+	# 		for j in d1['proxy']['forward']:
+	# 			list1.append(f"{j['localPort']} {j['destIP']}:{j['destPort']}")
+	# 	forward_port = list1
+	# else:
+	# 	dyn_port = 1080
+	# 	forward_port=[]
 	node = {}
 	for i in d1['vm'].keys():
 		if i != 'gw':
@@ -1852,7 +1852,7 @@ def write_ssh_config(d1):
 		'ssh_key': ssh_key,
 		'ssh_key_host': ssh_key_host,
 		'vmm': d1['pod']['vmmserver'],
-		'gw': {'ip': gw_ip, 'user':user, 'dyn_port': dyn_port,'forward_port' : forward_port},
+		'gw': {'ip': gw_ip, 'user':user },
 		'node': node
 		}
 	#print(data1)

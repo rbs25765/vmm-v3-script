@@ -54,8 +54,8 @@ if config1:
 			lib1.get_vnc_list(d1)
 		elif config1['cmd'] == 'get1':
 			lib1.create_novnc(d1)
-		elif config1['cmd'] == 'create_wg_config':
-			lib1.create_wg_config(d1)
+		elif config1['cmd'] == 'get_wg_config':
+			lib1.get_wg_config(d1)
 		# elif config1['cmd'] == 'get_dns':
 		# 	lib1.get_dns(d1)
 		#elif config1['cmd'] == 'get_serial':

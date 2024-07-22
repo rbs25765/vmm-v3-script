@@ -52,7 +52,7 @@ virt-install --name ${VM} \
 
 on hypervisor LXC1
 
-sudo hostname vm1
+sudo hostname vm1kvm1
 hostname | sudo tee /etc/hostname
 cat << EOF | sudo tee /etc/network/interfaces
 auto lo
@@ -60,11 +60,11 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet static
-address 192.168.201.1/24
-gateway 192.168.201.254
+address 192.168.11.111/24
+gateway 192.168.11.254
 iface eth0 inet6 static
-address fc00:dead:beef:a201::1000:1/64
-gateway fc00:dead:beef:a201::1
+address fc00:dead:beef:a011::1000:111/64
+gateway fc00:dead:beef:a011::1
 EOF
 
 cat << EOF | sudo tee /etc/resolv.conf

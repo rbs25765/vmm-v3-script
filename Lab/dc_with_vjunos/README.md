@@ -1,5 +1,5 @@
-# Running Juniper Apstra 4.1.2 and vEX
-this script is to run Juniper Apstra 4.1.2, Apstra ZTP server and vEX (21.2R3-S1.7) on juniper's VMM
+# Running Juniper Apstra 4.1.2 and vJunosSwitch
+this script is to run Juniper Apstra 4.1.2, Apstra ZTP server and vJunosSwitch (21.2R3-S1.7) on juniper's VMM
 
 ## Topology
 The logical topology of the testbed is as follows :
@@ -18,17 +18,17 @@ The logical topology of the testbed is as follows :
 ## Devices in the lab
 
 - DC1:
-    - spine : Spine1, Spine2 (vEX)
-    - leaf : leaf1, leaf2, leaf3, leaf4, leaf5, leaf6 (vEX)
+    - spine : Spine1, Spine2 (vJunosSwitch)
+    - leaf : leaf1, leaf2, leaf3, leaf4, leaf5, leaf6 (vJunosSwitch)
     - BMS : svr1, svr2, svr3, svr4,  (linux())
     - BMS with hypervisor (KVM) : svr5, lxc1, lxc2 (linux)
 - DC2
-    - collapsed switches: sw1, sw2 (vEX)
+    - collapsed switches: sw1, sw2 (vJunosSwitch)
     - BMS : svr6, svr7 (linux)
     - BMS with hypervisor (KVM) :  lxc3, lxc4 (linux)
 - DC3:
-    - spine : Spine1, Spine2 (vEX)
-    - leaf : leaf1, leaf2, leaf3, leaf4 (vEX)
+    - spine : Spine1, Spine2 (vJunosSwitch)
+    - leaf : leaf1, leaf2, leaf3, leaf4 (vJunosSwitch)
     - BMS : svr8, svr9 (linux())
     - BMS with hypervisor (KVM) : lxc5, lxc6 (linux)
 - External
@@ -38,10 +38,10 @@ The logical topology of the testbed is as follows :
     - GW: Linux router that provide connection to internet
     - vxlangw   
 - IP/Wan Backbone :
-    - Router : PE1, PE2, P1 (vMX )
+    - Router : PE1, PE2, P1 (vJunosRouter )
 - Apstra
-    - Juniper Apstra 4.1.2
-    - ZTP server 4.1.2
+    - Juniper Apstra 4.2.2
+    - ZTP server 4.2.2
 ## Device Connectivity
 
 
@@ -52,15 +52,15 @@ The logical topology of the testbed is as follows :
 - Alpine linux
     - user: ubuntu
     - password: pass01
-- vMX and vSRX
+- vJunosRouter and vSRX
     - user: admin
     - password: admin
-- vEX
+- vJunosSwitch
     - user: aosadmin
     - password: aosadmin123
 
 # To create the lab topology and initial configuration of VMs
-1. Go to directory [dc_with_vEX](./)
+1. Go to directory [dc_with_vjunos](./)
 2. Edit file [lab.yaml](./lab.yaml). Set the following parameters to choose which vmm server that you are going to use and the login credential:
     - vmmserver 
     - jumpserver
@@ -82,9 +82,13 @@ The logical topology of the testbed is as follows :
 
         ../../vmm.py set_host
 
-8. 7. Run script [vmm.py](../../vmm.py) to create ztp configuration for the ZTP server. Then later upload the ztp configuration file (./tmp/ztp_config.txt) into ztp server
+8. Run script [vmm.py](../../vmm.py) to create ztp configuration for the ZTP server. Then later upload the ztp configuration file (./tmp/ztp_config.txt) into ztp server
 
         ../../vmm.py get_ztp_config
+
+8. Run script [vmm.py](../../vmm.py) to create wireguard configuration
+
+        ../../vmm.py get_wg_config
 
 ## Setup Juniper Apstra
 1. Open console of VM of juniper Apstra. Open ssh session into node vmm, and run command **vmm serial -t apstra**
@@ -108,74 +112,49 @@ The logical topology of the testbed is as follows :
 
 9. from node **gw (ip 172.16.10.1)**, copy directory /home/ubuntu/.ssh into /home/admin/.ssh on node **apstra**. username/password to access 172.16.10.1 is ubuntu/pass01
 
-
-        on node apstra
-
         scp ubuntu@172.16.10.1:~/.ssh/* ~/.ssh/
 
 
-## Accesing Web UI of AOS
+## Accesing Apstra Web UI
+To access Web UI of AOS, it can be done in two ways
+1. using SSH forwarding
+2. Using wireguard VPN
 
-1. From your workstation, open ssh session to node **proxy** and keep this session open if you need to access the web dashboard of Paragon Automation platform
+## Accessing Apstra WEB UI using ssh forwarding
+1. open ssh session with forwarding to ip address of apstra server (172.16.10.2) and port 443
 
-        ssh proxy 
+        ssh -L 9191:172.16.10.2:443 gw
 
-2. If you are using Firefox as web browser, set proxy with the following parameters
-    - manual proxy configuration
-    - SOCKS host : 127.0.0.1
-    - PORT : 1080
-    - type: SOCKS v4    
-    ![firefox_proxy](images/firefox_proxy.png)
+2. from webbrowser on your workstation, open https session to https://127.0.0.1:9191
 
-3. If you are using Chrome as web browser, install extension Foxy Proxy and configure it with the following parameters
-    - manual proxy configuration
-    - SOCKS host : 127.0.0.1
-    - PORT : 1080
-    - type: SOCKS v4    
-    ![chrome_proxy1](images/chrome_proxy1.png)
-    ![chrome_proxy2](images/chrome_proxy2.png)
+## Accessing Apstra Web UI using wireguard VPN
+1. on your workstation, install wiregauard vpn 
 
-4. Open http session to https://172.16.10.2, and login using default credential, user/password: admin/admin
-  ![AOS_UI](images/web1.png)
-  ![AOS_UI](images/web2.png)
+        brew install wireguard-go
 
-5. Check the status of the devices. Select **Devices**>**Managed devices**. It should be empty, since we haven't discovered any devices yet.
+2. If wireguard configuration has not been created, then create it using vmm.py script
 
-    ![AOS_UI](images/web3.png)
+        ../../vmm.py create_wg_config
 
-6. Check the status of ztp of the  devices. Select **Devices**>**ZTP Status**>**devices**. It should be empty, since we haven't discovered any devices yet.
+3. it will create to configuration file, tmp/wg0_ws.conf which is the wireguard configuration for your workstation, and tmp/wg0_gw.conf, which is the wireguard configuration for node gw
 
-    ![AOS_UI](images/web4.png)
+4. upload file tmp/wg0_gw.conf into node gw, put it into file /etc/wireguard/wg0.conf, and start wireguard services
 
-6. Check the status of ztp services. Select **Devices**>**ZTP Status**>**Services**. It should be empty, since we haven't configured ZTP yet.
+        scp tmp/wg0_gw.conf gw:~/
+        ssh gw "sudo cp ~/wg0_gw.conf /etc/wireguard/wg0.conf"
+        ssh gw "sudo wg-quick up wg0"
 
-    ![AOS_UI](images/web5.png)
+5. copy file tmp/wg0_ws.conf into your workstation wireguard directory
 
-7. Create one user with the following parameter. On the Apstra dashboard, select **Platform**>**User Management**>**Users**
+        cp tmp/wg0_ws.conf /usr/local/etc/wireguard/wg0.conf
+        sudo wg-quick up wg0
 
-        user: ztp
-        global roles:  device_ztp
-        password: J4k4rt4#01  # password for ztp user
-    
-    ![AOS_UI](images/web6.png)
-    ![AOS_UI](images/web7.png)
+6. Verify that from your workstation you can access apstra controller
 
-8. If the lab is using vEX version 23.X and apstra version 4.1.2, then do the following steps
-9. click Devices > Device profiles
-10. Search for device profile **vEX**, and clone it
-
-    ![dp1](images/dp1.png)
-11. Set the name, for example Juniper vEX 23.X
-
-    ![dp2](images/dp2.png)
-11. click on selector, and edit Version from (1[89]|2[0-2])\\\..* to (1[89]|2[0-3])\\\..
-
-    ![dp4](images/dp3.png)
-
-12. Click Clone to save it.
-
-    ![dp4](images/dp4.png)
-
+        ping 172.16.10.2
+        curl -k https://172.16.10.2
+        
+7. open dashboard of apstra controller
 
 ## Setup of Apstra ZTP server
 1. Open console of VM of Apstra ZTP. Open ssh session into node vmm, and run command **vmm serial -t ztp**
@@ -233,9 +212,9 @@ The logical topology of the testbed is as follows :
 
         cat << EOF | sudo tee /containers_data/status/app/aos.conf
         {
-        "ip": "172.16.10.2",
-        "user": "ztp",
-        "password": "J4k4rt4#01"
+           "ip": "172.16.10.2",
+           "user": "ztp",
+           "password": "J4k4rt4#01"
         }
         EOF
 
@@ -305,7 +284,7 @@ The logical topology of the testbed is as follows :
         cli -c "configure; set system commit synchronize; set chassis evpn-vxlan-default-switch-support; commit and-quit"
         EOF
 
-    this step is required because vEX is virtual junos with EX9214 personality, and Apstra assume that it has dual RE (routing engine). On vEX, there is only one RE, therefore when apstra try to discover vEX it will fail.
+    this step is required because vJunosSwitch is virtual junos with EX9214 personality, and Apstra assume that it has dual RE (routing engine). On vJunosSwitch, there is only one RE, therefore when apstra try to discover vJunosSwitch it will fail.
 
 21. Under directory /containers_data/tftp/, create file junosevo_custom1.sh with the following content
 
@@ -348,7 +327,7 @@ The logical topology of the testbed is as follows :
     ![tftprestart](images/tftprestart.png)
     
 
-22. From your workstation, under directory [home directory]/git/vmm-v3-script/Lab/dc_with_vEX/tmp, there is a file ztp_config.txt. Upload this file into node **ztp**. You may need to edit this file to include the subnet for ip pool.
+22. From your workstation, under directory [home directory]/git/vmm-v3-script/Lab/dc_with_vJunosSwitch/tmp, there is a file ztp_config.txt. Upload this file into node **ztp**. You may need to edit this file to include the subnet for ip pool.
     ![ztp1](images/ztp1.png)
 
         scp tmp/ztp_config.txt ztp:~/
@@ -395,10 +374,10 @@ if Apstra 4.1.2 is and vjunos version 23.X is used, then the following steps are
 
    ![apstra1](images/apstra1.jpg)
 
-2. Search for vEX, and clone it
+2. Search for vJunosSwitch, and clone it
 
    ![apstra2](images/apstra2.jpg)
-3. Set a new name, for example *Juniper vEX 23.X"
+3. Set a new name, for example *Juniper vJunosSwitch 23.X"
 
    ![apstra3](images/apstra3.jpg)
 4. Click on selector, and edit field Version, change it from (1[89]|2[0-2])\..* to (1[89]|2[0-3])\..* 
@@ -441,10 +420,10 @@ The following steps is required to create customized device profile for vjunos e
 1. router PE1, PE2, PE3, and P1 must be configured to allow ztp/dhcp traffic forwarded between DC1, DC2, DC3 and apstra management network.
 2. To upload configuration, use ansible script [upload_config.yaml](router/upload_config.yaml)
 
-        cd router
+        cd config/router
         ansible-playbook upload_config.yaml
 
-3. Now routers are configured, and vEX will go through the ZTP process.
+3. Now routers are configured, and vJunosSwitch will go through the ZTP process.
 
 4. On Apstra UI Dashboard, go to **Devices**>**ZTP Status**>**Devices**, to verify that network devices (swithes) are discovered through ZTP
 
@@ -453,7 +432,6 @@ The following steps is required to create customized device profile for vjunos e
 5. Wait until the **ZTP status** is **completed**
 
     ![ztp17](images/ztp17.png)
-
 
 
 ## Lab exercise
