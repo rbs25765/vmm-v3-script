@@ -76,7 +76,7 @@ node | bridges | device A | device Z
 5. Verify that you can access node **gw** using ssh (username: ubuntu,  password: pass01 ). You may have to wait for few minutes for node **gw** to be up and running
 6. Run script [vmm.py](../../vmm.py) to send and run initial configuration on node **gw**. This will configure ip address on other interfaces (such ase eth1, eth2, etc) and enable dhcp server on node gw
 
-        ../../vmm.py set_gw
+        ../../vmm.py set_gw 
 
 7. Verify that you can access other nodes (linux and junos VM), such **control**, **node1**, **nod21**, etc. Please use the credential to login.
 

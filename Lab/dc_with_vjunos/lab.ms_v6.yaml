@@ -56,12 +56,6 @@ fabric:
     - [ 0x5d, pe2, ge-0/0/1, p1, ge-0/0/1 ]
     - [ 0x5d, pe3, ge-0/0/1, p1, ge-0/0/2 ]
     - [ 0x5d, pe4, ge-0/0/1, p1, ge-0/0/3 ]
-# proxy:
-#   forward:
-#     - localPort: 9191
-#       destPort: 443
-#       destIP: 172.16.10.2
-#   # DynForward: 1080
 wg:
   gw_ip: 192.168.199.0/31
   ws_ip: 192.168.199.1/31
@@ -271,7 +265,7 @@ vm:
         bridge: d1s2p8
       ge-0/0/9: 
         bridge: d1s2p9
-  sdc1spine3:
+  dc1spine3:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -299,7 +293,7 @@ vm:
         bridge: d1s3p8
       ge-0/0/9: 
         bridge: d1s3p9
-  sdc1spine4:
+  dc1spine4:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:
@@ -775,7 +769,7 @@ vm:
         bridge: d3l4p8
       ge-0/0/9: 
         bridge: d3l4p9
-  ddc3leaf5:
+  dc3leaf5:
     type: vjunos_switch
     os: vjunos_switch
     interfaces:

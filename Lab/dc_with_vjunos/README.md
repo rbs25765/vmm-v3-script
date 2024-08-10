@@ -116,16 +116,10 @@ The logical topology of the testbed is as follows :
 
 
 ## Accesing Apstra Web UI
-To access Web UI of AOS, it can be done in two ways
-1. using SSH forwarding
-2. Using wireguard VPN
-
-## Accessing Apstra WEB UI using ssh forwarding
-1. open ssh session with forwarding to ip address of apstra server (172.16.10.2) and port 443
-
-        ssh -L 9191:172.16.10.2:443 gw
-
-2. from webbrowser on your workstation, open https session to https://127.0.0.1:9191
+there are three options to access Web UI of AOS.
+1. Using wireguard VPN
+2. using sock proxy with SSH dynamic forwarding
+3. Using ssh forwarding
 
 ## Accessing Apstra Web UI using wireguard VPN
 1. on your workstation, install wiregauard vpn 
@@ -155,6 +149,29 @@ To access Web UI of AOS, it can be done in two ways
         curl -k https://172.16.10.2
         
 7. open dashboard of apstra controller
+
+## Accessing Apstra WEB UI using sock proxy with SSH dynamic forwarding
+1. from your workstation, open ssh session to node **proxy** and keep the session open
+
+        ssh proxy
+
+2. Use firefox web browser, open setting configuration, and search for proxy configuration.
+3. Under **Configure Proxy Access to the Internet**, and set to **Manual proxy configuratio**
+4. under **SOCKS Host** set ip address to **127.0.0.1** and Port to **1080**, and clik **OK** to save it
+5. on the URL bar, open access to apstra dashboard https://172.16.10.2
+
+![firefox](images/firefox_proxy.jpg)
+
+
+## Accessing Apstra WEB UI using ssh forwarding
+1. open ssh session with forwarding to ip address of apstra server (172.16.10.2) and port 443
+
+        ssh -L 9191:172.16.10.2:443 gw
+
+2. from webbrowser on your workstation, open https session to https://127.0.0.1:9191
+
+
+
 
 ## Setup of Apstra ZTP server
 1. Open console of VM of Apstra ZTP. Open ssh session into node vmm, and run command **vmm serial -t ztp**

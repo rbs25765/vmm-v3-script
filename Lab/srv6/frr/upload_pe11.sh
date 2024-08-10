@@ -1,0 +1,62 @@
+cat << EOF | sudo tee /etc/netplan/02_net.yaml
+network:
+  ethernets:       
+    eth3:
+      dhcp4: false
+      mtu: 9000
+    eth1:
+      dhcp4: false
+      mtu: 9000
+      addresses: 
+        - 10.100.1.0/31
+        - fc00:dead:beef:1001::0/127
+    eth2:
+      dhcp4: false
+      mtu: 9000
+      addresses: 
+        - 10.100.1.2/31
+        - fc00:dead:beef:1001::2/127
+  vlans:
+    eth3.101:
+      dhcp4: false
+      id: 101
+      link: eth3
+      addresses:
+        - 192.168.11.1/24
+        - fc00:dead:beef:a011::1/64 
+EOF
+
+sudo netplan apply
+
+sudo sed -i -e "s/isisd=no/isisd=yes/" /etc/frr/daemons 
+
+cat << EOF | sudo tee -a /etc/frr/frr.conf
+!
+interface eth1
+ ip router isis test1
+ ipv6 router isis test1
+ isis circuit-type level-2-only
+ isis network point-to-point
+exit
+!
+interface eth2
+ ip router isis test1
+ ipv6 router isis test1
+ isis circuit-type level-2-only
+ isis network point-to-point
+exit
+!
+interface eth3.101
+ ip router isis test1
+ ipv6 router isis test1
+exit
+!
+router isis test1
+ is-type level-2-only
+ net 49.0001.0001.0001.0011.00
+exit
+!
+end
+EOF
+
+sudo systemctl restart frr

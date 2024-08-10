@@ -1,6 +1,6 @@
 locals {
   rack_name_and_count = {
-    "otg972j1qmc9i3cmey2vig" = 3
+    "e12p7orxrmkltuyqgukm1w" = 3
   }
 }
 

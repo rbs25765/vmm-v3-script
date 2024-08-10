@@ -1,12 +1,12 @@
 ---
-name: lab1
+name: qinq
 pod: 
   type: vmm
   # if your account can access vmm lab directly, then you can comment out jumpserver
   #jumpserver: ttsv-shell110.juniper.net
   #jumpserver: ttqc-shell001.juniper.net
   #vmmserver: q-pod27-vmm.englab.juniper.net
-  vmmserver: q-pod25-vmm.englab.juniper.net
+  vmmserver: q-pod27-vmm.englab.juniper.net
   #vmmserver: sv8-pod4-vmm.englab.juniper.net
   user: irzan
   # adpassword: AnaMabokCoys
@@ -51,9 +51,9 @@ vm:
       ge-0/0/2:
         bridge: sw1p2
       ge-0/0/3:
-        bridge: p2p1
+        bridge: sw1p3
       ge-0/0/4:
-        bridge: p2p2
+        bridge: sw1p4
   sw2:
     type: vjunos_switch
     os: vjunos_switch
@@ -64,14 +64,16 @@ vm:
         family:
           inet: 172.16.10.12/24
       ge-0/0/0:
-        bridge: p2p1
+        bridge: sw2p0
       ge-0/0/1:
-        bridge: p2p2
+        bridge: sw2p1
       ge-0/0/2:
-        bridge: p2p3
+        bridge: sw2p2
       ge-0/0/3:
-        bridge: p2p4
-  sw3:
+        bridge: sw2p3
+      ge-0/0/4:
+        bridge: sw2p4
+  swpe1:
     type: vjunos_switch
     os: vjunos_switch
     ztp: yes
@@ -81,15 +83,35 @@ vm:
         family:
           inet: 172.16.10.13/24
       ge-0/0/0:
-        bridge: sw3p0
+        bridge: sw1p0
       ge-0/0/1:
-        bridge: sw3p1
-      ge-0/0/2:
-        bridge: sw3p2
-      ge-0/0/3:
-        bridge: p2p3
-      ge-0/0/4:
-        bridge: p2p4
+        bridge: ptp1
+  swp1:
+    type: vjunos_switch
+    os: vjunos_switch
+    ztp: yes
+    interfaces:
+      mgmt: 
+        bridge: mgmt
+        family:
+          inet: 172.16.10.14/24
+      ge-0/0/0:
+        bridge: ptp1
+      ge-0/0/1:
+        bridge: ptp2
+  swpe2:
+    type: vjunos_switch
+    os: vjunos_switch
+    ztp: yes
+    interfaces:
+      mgmt: 
+        bridge: mgmt
+        family:
+          inet: 172.16.10.15/24
+      ge-0/0/0:
+        bridge: sw2p0
+      ge-0/0/1:
+        bridge: ptp2
   kvm1:
     type: pchpv2
     os: ubuntu
@@ -98,18 +120,23 @@ vm:
       em0:
         bridge: mgmt
         family:
-          inet: 172.16.10.14/24
+          inet: 172.16.10.16/24
           gateway4: 172.16.10.1
       em1: 
-        bridge: sw1p0
-      em2: 
         bridge: sw1p1
-      em3: 
+      em2: 
         bridge: sw1p2
+      em3: 
+        bridge: sw1p3
       em4: 
-        bridge: sw3p0
+        bridge: sw1p4
       em5: 
-        bridge: sw3p1
+        bridge: sw2p1
       em6: 
-        bridge: sw3p2
+        bridge: sw2p2
+      em7: 
+        bridge: sw3p3
+      em8: 
+        bridge: sw4p4
+
   

@@ -25,6 +25,15 @@ host gw
     user {{ gw.user }}
     IdentityFile ~/.ssh/{{ ssh_key_host }}
 
+host proxy 
+    {% if jumphost -%}
+    ProxyCommand ssh -W {{ gw.ip }}:22 jumphost
+    {% else -%}
+    hostname {{gw.ip}}
+    {% endif -%}
+    user {{ gw.user }}
+    IdentityFile ~/.ssh/{{ ssh_key_host }}
+    DynamicForward 1080
 
 {% for n in node -%}
 host {{ n }}

@@ -33,7 +33,7 @@ EOF
 
 docker restart status
 
-/containers-data/tftp/ztp.json
+/containers_data/tftp/ztp.json
 
 
 cat << EOF | sudo tee /containers_data/tftp/junos_custom1.sh

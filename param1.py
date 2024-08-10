@@ -4,28 +4,28 @@ kvm_dir='/disk2/vm/'
 pc_type=['gw','pctiny','pcsmall','pcmedium','pcbig','pcxbig','pchpv0','pchpv1','pchpv2','pchpv3','bridge','cpe','paagent','ssrc','ssrr','aos','aos_ztp']
 junos_template='junos.j2'
 junos_type=['vsrx','vmx','mx240','mx480','mx960','vjunos_switch','vjunos_router','vjunos_evolved']
-vm_type_old={
-   'gw': {'ncpus' : 2,'memory':4096},
-   'paagent': {'ncpus' : 1,'memory':1024},
-   'pctiny': {'ncpus' : 1,'memory':4096},
-   'pcsmall': {'ncpus' : 2,'memory':8192},
-   'pcmedium': {'ncpus' : 2,'memory':16384},
-   'pcbig': {'ncpus' : 4,'memory':32768},
-   'pchpv1': {'ncpus' : 8,'memory':32768},
-   'pchpv2': {'ncpus' : 8,'memory':16384},
-   'pcxbig': {'ncpus' : 8,'memory':65536},
-   'esxi': {'ncpus' : 8,'memory':32768},
-   'vcsa': {'ncpus' : 4,'memory':16384},
-   'vapp': {'ncpus' : 4,'memory':32768},
-   'vapp_s': {'ncpus' : 1,'memory':4096},
-   'ssrc': {'ncpus' : 4,'memory':16384},
-   'ssrr': {'ncpus' : 4,'memory':8192},
-   'junos': '',
-   'vspirent': {'ncpus' : 2,'memory':1024},
-   'bridge': {'ncpus' : 2,'memory':2048},
-   'cpe': {'ncpus' : 1,'memory':256},
-   'veos': {'ncpus' : 2, 'memory':4096}
-}
+# vm_type_old={
+#    'gw': {'ncpus' : 2,'memory':4096},
+#    'paagent': {'ncpus' : 1,'memory':1024},
+#    'pctiny': {'ncpus' : 1,'memory':4096},
+#    'pcsmall': {'ncpus' : 2,'memory':8192},
+#    'pcmedium': {'ncpus' : 2,'memory':16384},
+#    'pcbig': {'ncpus' : 4,'memory':32768},
+#    'pchpv1': {'ncpus' : 8,'memory':32768},
+#    'pchpv2': {'ncpus' : 8,'memory':16384},
+#    'pcxbig': {'ncpus' : 8,'memory':65536},
+#    'esxi': {'ncpus' : 8,'memory':32768},
+#    'vcsa': {'ncpus' : 4,'memory':16384},
+#    'vapp': {'ncpus' : 4,'memory':32768},
+#    'vapp_s': {'ncpus' : 1,'memory':4096},
+#    'ssrc': {'ncpus' : 4,'memory':16384},
+#    'ssrr': {'ncpus' : 4,'memory':8192},
+#    'junos': '',
+#    'vspirent': {'ncpus' : 2,'memory':1024},
+#    'bridge': {'ncpus' : 2,'memory':2048},
+#    'cpe': {'ncpus' : 1,'memory':256},
+#    'veos': {'ncpus' : 2, 'memory':4096}
+# }
 vm_type={
    'gw': {'ncpus' : 2,'memory':4096,'setvar':'"+qemu_args" "-cpu qemu64,+vmx"'},
    'pctiny': {'ncpus' : 1,'memory':4096,'setvar':'"+qemu_args" "-cpu qemu64,+vmx"'},

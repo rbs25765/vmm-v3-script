@@ -1877,11 +1877,17 @@ def add_to_ssh_config(file1):
 		with open(ssh_config) as f_config:
 			for line in f_config:
 				if '### by vmm-v3-script ###' in line:
+				#if '### the last line' in line:
 					print("found entry with ### by vmm-v3-script ###")
+					#print("the last line")
+					#orig1.append(line.rstrip())
 					break
 				else:
 					orig1.append(line.rstrip())
-		orig1.append("\n")
+		#orig1.append("\n")
+		last_line = orig1[-1].replace(' ','')
+		if last_line:
+			orig1.append("\n")
 		orig2 = "\n".join(orig1)
 		with open(ssh_config,"w") as wr1:
 			wr1.write(orig2)

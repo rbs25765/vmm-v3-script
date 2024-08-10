@@ -11,20 +11,46 @@ network:
       dhcp4: no
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:81:dc
+      macaddress: 56:04:1b:00:40:a5
       interfaces:
         - eth0
         - eth1
       parameters:
          mode: 802.3ad
-      addresses: [ 192.168.101.1/24, fc00:dead:beef:a101::1000:1/64]
-      gateway4: 192.168.101.254
+      addresses: [ 192.168.11.1/24, fc00:dead:beef:a011::1000:1/64]
+      gateway4: 192.168.11.254
       nameservers:
         addresses: [8.8.8.8,8.8.4.4]
 EOF
 
 uuidgen | sed -e "s/-//g" | sudo tee /etc/machine-id
 
+
+sudo hostname svr2
+hostname | sudo tee /etc/hostname
+cat << EOF | sudo tee /etc/netplan/01_net.yaml
+
+network:
+  ethernets:
+    eth0:
+      dhcp4: no
+    eth1:
+      dhcp4: no
+  bonds:
+    bond0:
+      macaddress: 56:04:1b:00:35:6e
+      interfaces:
+        - eth0
+        - eth1
+      parameters:
+         mode: 802.3ad
+      addresses: [ 192.168.12.2/24, fc00:dead:beef:a012::1000:2/64]
+      gateway4: 192.168.12.254
+      nameservers:
+        addresses: [8.8.8.8,8.8.4.4]
+EOF
+
+uuidgen | sed -e "s/-//g" | sudo tee /etc/machine-id
 
 sudo hostname svr3
 hostname | sudo tee /etc/hostname
@@ -38,14 +64,14 @@ network:
       dhcp4: no
   bonds:
     bond0:
-      macaddress: 56:04:1b:00:5d:43
+      macaddress: 56:04:1b:00:30:1c
       interfaces:
         - eth0
         - eth1
       parameters:
          mode: 802.3ad
-      addresses: [ 192.168.101.3/24, fc00:dead:beef:a101::1000:3/64]
-      gateway4: 192.168.101.254
+      addresses: [ 192.168.11.3/24, fc00:dead:beef:a011::1000:3/64]
+      gateway4: 192.168.11.254
       nameservers:
         addresses: [8.8.8.8,8.8.4.4]
 EOF

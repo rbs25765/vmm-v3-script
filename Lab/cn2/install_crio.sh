@@ -5,7 +5,7 @@ export OS=xUbuntu_20.04
 # export MAJ_VER=1.26
 # export MIN_VER=1.26.3
 export MAJ_VER=1.28
-export MIN_VER=1.28.1
+export MIN_VER=1.28.4
 echo "deb [signed-by=/usr/share/keyrings/libcontainers-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/ /" | sudo tee  /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
 echo "deb [signed-by=/usr/share/keyrings/libcontainers-crio-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${MAJ_VER}:/${MIN_VER}/$OS/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:${MAJ_VER}:${MIN_VER}.list
 

@@ -28,6 +28,11 @@
 
         sudo wg-quick up wg0
 
+7. to add wireguard service to  systemd, do the following
+
+        sudo systemctl enable wg-quick@wg0
+        sudo systemctl start wg-quick@wg0
+
 
 6. Create wireguard configuration file for your workstation and save it as (for example) /etc/wireguard/wg0.conf
 
