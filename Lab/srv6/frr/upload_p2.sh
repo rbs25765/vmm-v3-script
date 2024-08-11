@@ -6,14 +6,14 @@ network:
       mtu: 9000
       addresses:
         - 10.100.1.3/31
-        - fc00:dead:beef:ffff::3/127
+        - fc00:dead:beef:1001::3/127
        
     eth2:
       dhcp4: false
       mtu: 9000
       addresses:
         - 10.100.1.7/31
-        - fc00:dead:beef:ffff::7/127
+        - fc00:dead:beef:1001::7/127
 EOF
 
 sudo netplan apply

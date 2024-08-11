@@ -10,14 +10,14 @@ network:
       mtu: 9000
       addresses:
         - 10.100.1.4/31
-        - fc00:dead:beef:ffff::4/127
+        - fc00:dead:beef:1001::4/127
        
     eth2:
       dhcp4: false
       mtu: 9000
       addresses:
         - 10.100.1.6/31
-        - fc00:dead:beef:ffff::6/127
+        - fc00:dead:beef:1001::6/127
   vlans:
     eth3.101:
       dhcp4: false

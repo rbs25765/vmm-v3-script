@@ -17,7 +17,7 @@ pod:
 images:
   gw: images/gw.qcow2
   ubuntu: images/ubuntu22.04.qcow2
-  ubuntu2: images/router.qcow2
+  debian: images/router.qcow2
   #desktop: images/desktop.qcow2
   #vmx: images/vmx/junos-vmx-x86-64-23.2R1.13.vmdk
   #bridge: images/bridge.qcow2
@@ -100,7 +100,7 @@ vm:
         dhcp_range: 172.16.10.1-172.16.10.100
   pe11:
     type: pcmedium
-    os: ubuntu2
+    os: debian
     interfaces:
       em0: 
         bridge: mgmt
@@ -110,7 +110,7 @@ vm:
         bridge: pe11em3
   pe12:
     type: pcmedium
-    os: ubuntu2
+    os: debian
     interfaces:
       em0: 
         bridge: mgmt
@@ -120,7 +120,7 @@ vm:
         bridge: pe12em3
   p1:
     type: pcmedium
-    os: ubuntu2
+    os: debian
     interfaces:
       em0: 
         bridge: mgmt
@@ -128,7 +128,7 @@ vm:
           inet: 172.16.10.3/24
   p2:
     type: pcmedium
-    os: ubuntu2
+    os: debian
     interfaces:
       em0: 
         bridge: mgmt
