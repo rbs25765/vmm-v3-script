@@ -1,4 +1,5 @@
 sudo sed -i -e "s/ldpd=no/ldpd=yes/" /etc/frr/daemons
+sudo sed -i -e "s/isisd=no/isisd=yes/" /etc/frr/daemons
 sudo systemctl restart frr
 
 sudo modprobe mpls_router
@@ -6,6 +7,12 @@ sudo modprobe mpls_iptunnel
 sudo modprobe mpls_gso
 sudo modprobe dummy
 
+cat << EOF | sudo tee /etc/modules-load.d/10_mpls.conf
+mpls_router
+mpls_iptunnel
+mpls_gso
+dummy
+EOF
 
 cat << EOF | sudo tee /etc/sysctl.d/90-mpls-router.conf
 net.ipv4.ip_forward=1
@@ -21,133 +28,152 @@ sudo sysctl -p /etc/sysctl.d/90-mpls-router.conf
 router PE11
 -----------
 
-sudo ip link add dev dummy0 type dummy
-sudo ip link set dev dummy0 up 
-sudo ip addr add dev dummy0 192.168.255.11/32
+sudo sed -i -e "s/bgpd=no/bgpd=yes/" /etc/frr/daemons
 
+cat << EOF | sudo tee /etc/systemd/system/rc.local.service
 
-sudo vtysh 
-config t
-interface dummy0
- ip router isis test1
- ipv6 router isis test1
- isis network point-to-point
-exit
-exit
-write mem
-end
+[Unit]
+Description=RC local service
+After=network.target auditd.service
 
-router bgp 65001
- neighbor 192.168.255.12 remote-as 65001
- neighbor 192.168.255.12 update-source dummy0
- !
- address-family ipv4 vpn
-  neighbor 192.168.255.12 activate
- exit-address-family
-exit
+[Service]
+ExecStart=/usr/local/bin/startup.sh
 
+[Install]
+WantedBy=multi-user.target
+EOF
 
-sudo sysctl net.mpls.conf.eth1.input=1
-sudo sysctl net.mpls.conf.eth2.input=1
+cat << EOF | sudo tee /usr/local/bin/startup.sh
+#!/bin/bash
+ip link add dev dummy0 type dummy
+ip link set dev dummy0 up
+ip addr add dev dummy0 192.168.255.11/32
+ip -6 addr add dev dummy0 ::ffff:192.168.255.11/32
+ip link add customer1 type vrf table 100
+ip link set customer1 up
+ip route add vrf customer1 unreachable default metric 4278198272
+ip -6 route add vrf customer1 unreachable default metric 4278198272
+ip link set eth3.101 vrf customer1
+sysctl net.mpls.conf.eth1.input=1
+sysctl net.mpls.conf.eth2.input=1
+systemctl start frr
+exit 0
+EOF
+sudo chmod +x /usr/local/bin/startup.sh
 
-config t
-mpls ldp
- router-id 192.168.255.11
- address-family ipv4
-  discovery transport-address 192.168.255.11
-  interface eth1
-  interface eth2
-exit
-exit
-exit
-write mem
-end
+sudo systemctl enable rc.local.service
+sudo systemctl start rc.local.service
 
-sudo  ip link add customer1 type vrf table 100
-sudo ip link set customer1 up
-sudo ip route add vrf customer1 unreachable default metric 4278198272
-sudo ip -6 route add vrf customer1 unreachable default metric 4278198272
-sudo ip link set eth3.101 vrf customer1 
-
-
-router bgp 65001 vrf customer1
- address-family ipv4 unicast
-  redistribute connected
-  label vpn export auto
-  rd vpn export 65000:100
-  rt vpn both 65000:100
-  export vpn
-  import vpn
 
 
 router PE12
 -----------
 
-sudo ip link add dev dummy0 type dummy
-sudo ip link set dev dummy0 up 
-sudo ip addr add dev dummy0 192.168.255.12/32
+sudo sed -i -e "s/bgpd=no/bgpd=yes/" /etc/frr/daemons
+cat << EOF | sudo tee /etc/systemd/system/rc.local.service
 
+[Unit]
+Description=RC local service
+After=network.target auditd.service
 
+[Service]
+ExecStart=/usr/local/bin/startup.sh
 
-mpls ldp
- router-id 192.168.255.12
- address-family ipv4
-  discovery transport-address 192.168.255.12
-  interface eth1
-  interface eth2
-exit
-exit
-exit
-write mem
-end
+[Install]
+WantedBy=multi-user.target
+EOF
 
+cat << EOF | sudo tee /usr/local/bin/startup.sh
+#!/bin/bash
+ip link add dev dummy0 type dummy
+ip link set dev dummy0 up
+ip addr add dev dummy0 192.168.255.12/32
+ip -6 addr add dev dummy0 ::ffff:192.168.255.12/32
+ip link add customer1 type vrf table 100
+ip link set customer1 up
+ip route add vrf customer1 unreachable default metric 4278198272
+ip -6 route add vrf customer1 unreachable default metric 4278198272
+ip link set eth3.101 vrf customer1
+sysctl net.mpls.conf.eth1.input=1
+sysctl net.mpls.conf.eth2.input=1
+systemctl start frr
+exit 0
+EOF
+sudo chmod +x /usr/local/bin/startup.sh
 
-router bgp 65001
- neighbor 192.168.255.11 remote-as 65001
- neighbor 192.168.255.11 update-source dummy0
- !
- address-family ipv4 vpn
-  neighbor 192.168.255.11 activate
- exit-address-family
-exit
+sudo systemctl enable rc.local.service
+sudo systemctl start rc.local.service
 
 
 router P1
 -----------
 
-sudo ip link add dev dummy0 type dummy
-sudo ip link set dev dummy0 up 
-sudo ip addr add dev dummy0 192.168.255.1/32
 
-mpls ldp
- router-id 192.168.255.1
- address-family ipv4
-  discovery transport-address 192.168.255.1
-  interface eth1
-  interface eth2
+cat << EOF | sudo tee /etc/systemd/system/rc.local.service
 
+[Unit]
+Description=RC local service
+After=network.target auditd.service
 
+[Service]
+ExecStart=/usr/local/bin/startup.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat << EOF | sudo tee /usr/local/bin/startup.sh
+#!/bin/bash
+ip link add dev dummy0 type dummy
+ip link set dev dummy0 up
+ip addr add dev dummy0 192.168.255.1/32
+ip -6 addr add dev dummy0 ::ffff:192.168.255.1/32
+sysctl net.mpls.conf.eth1.input=1
+sysctl net.mpls.conf.eth2.input=1
+systemctl start frr
+exit 0
+EOF
+
+sudo chmod +x /usr/local/bin/startup.sh
+
+sudo systemctl enable rc.local.service
+sudo systemctl start rc.local.service
 
 router P2
 -----------
 
-sudo ip link add dev dummy0 type dummy
-sudo ip link set dev dummy0 up 
-sudo ip addr add dev dummy0 192.168.255.2/32
+
+cat << EOF | sudo tee /etc/systemd/system/rc.local.service
+
+[Unit]
+Description=RC local service
+After=network.target auditd.service
+
+[Service]
+ExecStart=/usr/local/bin/startup.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat << EOF | sudo tee /usr/local/bin/startup.sh
+#!/bin/bash
+ip link add dev dummy0 type dummy
+ip link set dev dummy0 up
+ip addr add dev dummy0 192.168.255.2/32
+ip -6 addr add dev dummy0 ::ffff:192.168.255.2/32
+sysctl net.mpls.conf.eth1.input=1
+sysctl net.mpls.conf.eth2.input=1
+systemctl start frr
+exit 0
+EOF
 
 
-mpls ldp
- router-id 192.168.255.2
- address-family ipv4
-  discovery transport-address 192.168.255.2
-  interface eth1
-  interface eth2
-exit
-exit
-exit
-interface dummy0 
-mpls enable
-exit
+sudo chmod +x  /usr/local/bin/startup.sh
+
+sudo systemctl enable rc.local
+sudo systemctl start rc.local
+
 
 
 

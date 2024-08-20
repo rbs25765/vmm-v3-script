@@ -20,7 +20,45 @@ EOF
 
 sudo netplan apply
 
-for i in ce{1..8}eth1
+for i in s{1..}
+do
+   sudo sysctl -w "net.ipv6.conf.${i}.disable_ipv6=1"
+done
+
+
+cat << EOF | sudo tee /etc/netplan/02_net.yaml
+network:
+  bridges:
+    ovs1:
+      openvswitch: {}
+      interfaces: [eth1]
+    ovs2:
+      openvswitch: {}
+      interfaces: [eth2]
+    ovs3:
+      openvswitch: {}
+      interfaces: [eth3]
+    ovs4:
+      openvswitch: {}
+      interfaces: [eth4]
+    s1ce1eth1: {}
+    s1ce2eth1: {}
+    s1ce3eth1: {}
+    s2ce1eth1: {}
+    s2ce2eth1: {}
+    s2ce3eth1: {}
+    s3ce1eth1: {}
+    s3ce2eth1: {}
+    s3ce3eth1: {}
+    s4ce1eth1: {}
+    s4ce2eth1: {}
+    s4ce3eth1: {}
+EOF
+
+
+sudo netplan apply
+
+for i in s{1..4}ce{1..3}eth1
 do
    sudo sysctl -w "net.ipv6.conf.${i}.disable_ipv6=1"
 done

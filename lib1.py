@@ -1367,9 +1367,9 @@ def set_host(d1,vm=""):
 			#cmd1="nohup sh ~/set_host.sh &"
 			cmd1="sh ~/set_host.sh"
 			stdin_, stdout_, stderr_ = ssh2host.exec_command(cmd1)
-			stdout_.channel.recv_exit_status()
-			sftp.close()
-			ssh2host.close()
+			# stdout_.channel.recv_exit_status()
+			# sftp.close()
+			# ssh2host.close()
 	
 def get_dns_ip(d1,i):
 	retval='127.0.1.1'

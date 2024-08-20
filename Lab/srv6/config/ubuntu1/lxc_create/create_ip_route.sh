@@ -1,20 +1,20 @@
 #!/bin/bash
 for i in {1..4}
 do 
-    echo "creating LXC s${i}ce2"
-    lxc copy router s${i}ce2
-    echo "creating LXC s${i}ce2c1"
-    lxc copy client s${i}ce2c1
+    echo "creating LXC s${i}ce1"
+    lxc copy router s${i}ce1
+    echo "creating LXC s${i}ce1c1"
+    lxc copy client s${i}ce1c1
 done 
 
 # changing LXC container configuration, node router
-VLAN=102
+VLAN=101
 for i in {1..4}
 do
 OVS=ovs${i}
-BR=s${i}ce2eth1
-echo "changing container s${i}ce2"
-lxc query --request PATCH /1.0/instances/s${i}ce2 --data "{
+BR=s${i}ce1eth1
+echo "changing container s${i}ce1"
+lxc query --request PATCH /1.0/instances/s${i}ce1 --data "{
   \"devices\": {
     \"eth0\" :{
        \"name\": \"eth0\",
@@ -32,8 +32,8 @@ lxc query --request PATCH /1.0/instances/s${i}ce2 --data "{
   }
 }"
 
-echo "changing container s${i}ce2c1"
-lxc query --request PATCH /1.0/instances/s${i}ce2c1 --data "{
+echo "changing container s${i}ce1c1"
+lxc query --request PATCH /1.0/instances/s${i}ce1c1 --data "{
 \"devices\": {
         \"eth0\" : {
             \"name\": \"eth0\",
@@ -47,13 +47,13 @@ done
 
 # Changing lxc container configuration, node client
 #!/bin/bash
-EP=8
-RP=9
+EP=0
+RP=1
 for i in {1..4}
 do 
-NET=11${i}
-ASN=101${i}
-echo "changing container s${i}ce2"
+NET=10${i}
+ASN=100${i}
+echo "changing container s${i}ce1"
 cat << EOF | tee interfaces
 auto eth0
 iface eth0 inet static
@@ -71,7 +71,7 @@ EOF
 
 cat << EOF | tee frr.conf 
 frr defaults traditional
-hostname s${i}ce2
+hostname s${i}ce1
 log syslog informational
 ipv6 forwarding
 service integrated-vtysh-config
@@ -110,16 +110,16 @@ subnet 192.168.${NET}.0 netmask 255.255.255.0 {
 }
 EOF
 
-echo "push configuration into node s${i}ce2"
-lxc file push interfaces s${i}ce2/etc/network/interfaces
-lxc file push frr.conf s${i}ce2/etc/frr/frr.conf
-lxc file push dhcpd.conf s${i}ce2/etc/dhcp/dhcpd.conf
+echo "push configuration into node s${i}ce1"
+lxc file push interfaces s${i}ce1/etc/network/interfaces
+lxc file push frr.conf s${i}ce1/etc/frr/frr.conf
+lxc file push dhcpd.conf s${i}ce1/etc/dhcp/dhcpd.conf
 
 done
 
 for i in {1..4}
 do
-    lxc start s${i}ce2
-    lxc start s${i}ce2c1
+    lxc start s${i}ce1
+    lxc start s${i}ce1c1
 done
 

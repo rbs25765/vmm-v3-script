@@ -1,21 +1,12 @@
 #!/bin/bash
-for i in c{1..4}evpn1
+for i in {1..4} 
 do
-    echo "creating LXC ${i}"
-    lxc copy client ${i}
-done
-
+    echo "creating LXC c${i}evpn1"
+    lxc copy client c${i}evpn1
 # changing LXC container configuration, node router
 VLAN=103
-for i in {1..4}
-do
+OVS=ovs${i}
 echo "changing container c${i}evpn1"
-if [ $i -eq 1 -o $i -eq 2 ];
-then 
-    OVS=ovs1
-else
-    OVS=ovs2
-fi
 lxc query --request PATCH /1.0/instances/c${i}evpn1 --data "{
   \"devices\": {
     \"eth0\" :{
@@ -27,12 +18,7 @@ lxc query --request PATCH /1.0/instances/c${i}evpn1 --data "{
     }
   }
 }"
-done
-
 # Changing lxc container configuration, node client
-
-for i in {1..4}
-do
 echo "push configuration into node c${i}evpn1"
 cat << EOF | tee ./interface.conf
 auto eth0
@@ -46,7 +32,4 @@ EOF
 lxc file push ./interface.conf c${i}evpn1/etc/network/interfaces
 done
 
-for i in c{1..4}evpn1
-do
-    lxc start $i
-done
+lxc start c{1..4}evpn1

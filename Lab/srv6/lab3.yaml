@@ -17,7 +17,7 @@ pod:
 images:
   gw: images/gw.qcow2
   ubuntu: images/ubuntu22.04.qcow2
-  debian: images/router.qcow2
+  ubuntu2: images/router_crio.qcow2
   #desktop: images/desktop.qcow2
   #vmx: images/vmx/junos-vmx-x86-64-23.2R1.13.vmdk
   #bridge: images/bridge.qcow2
@@ -36,14 +36,14 @@ junos_login:
 # snmp: 
 #   server: 172.16.255.4
 #   ro_community: public
-fabric:
-  #subnet: 10.100.0.0/24
-  #subnet6: fc00:dead:beef:a101::/64
-  topology:
-  - [ 0x0, pe11, em1, p1, em1 ]
-  - [ 0x0, pe11, em2, p2, em1 ]
-  - [ 0x0, pe12, em1, p1, em2 ]
-  - [ 0x0, pe12, em2, p2, em2 ]
+# fabric:
+#   #subnet: 10.100.0.0/24
+#   #subnet6: fc00:dead:beef:a101::/64
+#   topology:
+#   - [ 0x0, pe11, em1, p1, em1 ]
+#   - [ 0x0, pe11, em2, p2, em1 ]
+#   - [ 0x0, pe12, em1, p1, em2 ]
+#   - [ 0x0, pe12, em2, p2, em2 ]
 #   # there are five field: status, VM node A, interface of node A, VM node Z, interface of node Z
 #   # value for the field status:
 #   # bit 0 : ipv4
@@ -100,40 +100,88 @@ vm:
         dhcp_range: 172.16.10.1-172.16.10.100
   pe11:
     type: pcmedium
-    os: debian
+    os: ubuntu2
     interfaces:
       em0: 
         bridge: mgmt
         family:
           inet: 172.16.10.1/24 
+      em1:
+        bridge: pe11_p1
+        mtu: 9000
+        family:
+          inet: 10.100.1.0/31
+          inet6: fc00:dead:beef:1001::0/127
+      em2:
+        bridge: pe11_p2
+        mtu: 9000
+        family:
+          inet: 10.100.1.2/31
+          inet6: fc00:dead:beef:1001::2/127
       em3:
         bridge: pe11em3
   pe12:
     type: pcmedium
-    os: debian
+    os: ubuntu2
     interfaces:
       em0: 
         bridge: mgmt
         family:
           inet: 172.16.10.2/24
+      em1:
+        bridge: pe12_p1
+        mtu: 9000
+        family:
+          inet: 10.100.1.4/31
+          inet6: fc00:dead:beef:1001::4/127
+      em2:
+        bridge: pe12_p2
+        mtu: 9000
+        family:
+          inet: 10.100.1.6/31
+          inet6: fc00:dead:beef:1001::6/127
       em3:
         bridge: pe12em3
   p1:
     type: pcmedium
-    os: debian
+    os: ubuntu2
     interfaces:
       em0: 
         bridge: mgmt
         family:
           inet: 172.16.10.3/24
+      em1:
+        bridge: pe11_p1
+        mtu: 9000
+        family:
+          inet: 10.100.1.1/31
+          inet6: fc00:dead:beef:1001::1/127
+      em2:
+        bridge: pe12_p1
+        mtu: 9000
+        family:
+          inet: 10.100.1.5/31
+          inet6: fc00:dead:beef:1001::5/127
   p2:
     type: pcmedium
-    os: debian
+    os: ubuntu2
     interfaces:
       em0: 
         bridge: mgmt
         family:
           inet: 172.16.10.4/24
+      em1:
+        bridge: pe11_p2
+        mtu: 9000
+        family:
+          inet: 10.100.1.3/31
+          inet6: fc00:dead:beef:1001::3/127
+      em2:
+        bridge: pe12_p2
+        mtu: 9000
+        family:
+          inet: 10.100.1.7/31
+          inet6: fc00:dead:beef:1001::7/127
   client:
     type: pchpv2
     os: ubuntu

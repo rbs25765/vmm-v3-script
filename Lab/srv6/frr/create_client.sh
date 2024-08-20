@@ -6,11 +6,44 @@
 # done
 
 
+sudo apt install openvswitch-common openvswitch-switch
+
+cat << EOF | sudo tee /etc/netplan/02_net.yaml
+network:
+  bridges:
+    ovs1:
+      openvswitch: {}
+      interfaces:
+      - eth1
+    ovs2:
+      openvswitch: {}
+      interfaces:
+      - eth2
+EOF
+sudo netplan apply
+
+
+lxc image copy images:alpine/edge local: --alias alpine
+
+lxc launch alpine alpine
+lxc exec alpine sh
+
+apk update
+apk upgrade
+apk add openssh iperf iperf3 curl python3
+rc-update add sshd
+service sshd start
+ssh-keygen -t rsa
+cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys
+
+lxc stop alpine
+
+
 export LXC_NAME=c2
 export VLAN=101
 export OVS=ovs2
 echo "Creating container ${LXC_NAME}"
-lxc copy client ${LXC_NAME}
+lxc copy alpine ${LXC_NAME}
 lxc query --request PATCH /1.0/instances/${LXC_NAME} --data "{
   \"devices\": {
     \"eth0\" :{
@@ -43,7 +76,6 @@ interface eth3.101
 EOF
 sudo systemctl restart radvd
 
-
 cat << EOF | sudo tee /etc/dhcp/dhcpd.conf
 default-lease-time 600;
 max-lease-time 7200;
@@ -54,7 +86,6 @@ subnet 192.168.12.0 netmask 255.255.255.0 {
 }
 EOF
 
-sudo systemctl restart isc-dhcp-server
 
 
 cat << EOF | sudo tee /etc/dhcp/dhcpd6.conf
@@ -64,12 +95,22 @@ option dhcp-renewal-time 3600;
 option dhcp-rebinding-time 7200;
 allow leasequery;
 option dhcp6.info-refresh-time 21600;
-subnet6 fc00:dead:beef:a011::/64 {
-    range6 fc00:dead:beef:a011::1000:1 fc00:dead:beef:a011::1000:ffff;
+subnet6 fc00:dead:beef:a012::/64 {
+    range6 fc00:dead:beef:a012::1000:1 fc00:dead:beef:a012::1000:ffff;
 }
 EOF
 
+sudo systemctl restart isc-dhcp-server
+
 
 EOF
 
-sudo dhcpd -user dhcpd -group dhcpd -6 -pf /run/dhcp-server/dhcpd6.pid -cf /etc/dhcp/dhcpd6.conf eth3.101
+sudo systemctl enable isc-dhcp-server frr lldpd radvd
+sudo systemctl start isc-dhcp-server frr lldpd radvd
+
+
+
+for i in ubuntu@172.16.10.{1..4}
+do
+  scp ./junos-routing-crpd-docker-amd64-24.2R1.14.tgz ${i}:~/
+done
