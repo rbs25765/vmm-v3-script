@@ -9,14 +9,8 @@ set interfaces ge-0/0/0 unit 101 vlan-id 101
 set interfaces ge-0/0/0 unit 101 family inet address 192.168.255.1/31
 set interfaces ge-0/0/0 unit 101 family inet6 address fc00:dead:beef:ffff::1/127
 set routing-options autonomous-system 4200000001
-set routing-options forwarding-table export LB
-set policy-options policy-statement LB term 1 then load-balance per-flow
-set policy-options policy-statement LB term 1 then accept
 set protocols bgp group to_ce neighbor 192.168.255.0 peer-as 4200001001
 set protocols bgp group to_ce neighbor fc00:dead:beef:ffff:: peer-as 4200001001
-
-
-
 set policy-options policy-statement to_int term 1 then next-hop self
 set policy-options policy-statement to_int term 1 then accept
 set protocols bgp group to_int type internal
@@ -27,107 +21,25 @@ set protocols bgp group to_int family inet unicast advertise-srv6-service
 set protocols bgp group to_int family inet unicast accept-srv6-service
 set protocols bgp group to_int family inet6 unicast advertise-srv6-service
 set protocols bgp group to_int family inet6 unicast accept-srv6-service
-set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:3
-
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
 set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
 set protocols bgp rfc6514-compliant-safi129
 set protocols bgp multipath list-nexthop
 set routing-options resolution preserve-nexthop-hierarchy
-
-
-
-### PE14
-
-delete interface ge-0/0/0 unit 0
-
-set interfaces ge-0/0/0 flexible-vlan-tagging
-set interfaces ge-0/0/0 encapsulation flexible-ethernet-services
-set interfaces ge-0/0/0 unit 101 vlan-id 101
-set interfaces ge-0/0/0 unit 101 family inet address 192.168.255.7/31
-set interfaces ge-0/0/0 unit 101 family inet6 address fc00:dead:beef:ffff::7/127
-set routing-options autonomous-system 4200000001
-set routing-options forwarding-table export LB
-set policy-options policy-statement LB term 1 then load-balance per-flow
-set policy-options policy-statement LB term 1 then accept
-set protocols bgp group to_ce neighbor 192.168.255.6 peer-as 4200001004
-set protocols bgp group to_ce neighbor fc00:dead:beef:ffff::6 peer-as 4200001004
-
-
-
-
-set policy-options policy-statement to_int term 1 then next-hop self
-set policy-options policy-statement to_int term 1 then accept
-set protocols bgp group to_int type internal
-set protocols bgp group to_int export to_int
-set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:14
-set protocols bgp group to_int family inet unicast extended-nexthop
-set protocols bgp group to_int family inet unicast advertise-srv6-service
-set protocols bgp group to_int family inet unicast accept-srv6-service
-set protocols bgp group to_int family inet6 unicast advertise-srv6-service
-set protocols bgp group to_int family inet6 unicast accept-srv6-service
-set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:3
-set routing-options resolution preserve-nexthop-hierarchy
-set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
-set protocols bgp rfc6514-compliant-safi129
-set protocols bgp multipath list-nexthop
-
-
-### PE13
-
-delete interface ge-0/0/0 unit 0
-
-set interfaces ge-0/0/0 flexible-vlan-tagging
-set interfaces ge-0/0/0 encapsulation flexible-ethernet-services
-set interfaces ge-0/0/0 unit 101 vlan-id 101
-set interfaces ge-0/0/0 unit 101 family inet address 192.168.255.5/31
-set interfaces ge-0/0/0 unit 101 family inet6 address fc00:dead:beef:ffff::5/127
-set routing-options autonomous-system 4200000001
-set routing-options forwarding-table export LB
-set policy-options policy-statement LB term 1 then load-balance per-flow
-set policy-options policy-statement LB term 1 then accept
-set protocols bgp group to_ce neighbor 192.168.255.4 peer-as 4200001003
-set protocols bgp group to_ce neighbor fc00:dead:beef:ffff::4 peer-as 4200001003
-
-
-
-
-set policy-options policy-statement to_int term 1 then next-hop self
-set policy-options policy-statement to_int term 1 then accept
-set protocols bgp group to_int type internal
-set protocols bgp group to_int export to_int
-set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:13
-set protocols bgp group to_int family inet unicast extended-nexthop
-set protocols bgp group to_int family inet unicast advertise-srv6-service
-set protocols bgp group to_int family inet unicast accept-srv6-service
-set protocols bgp group to_int family inet6 unicast advertise-srv6-service
-set protocols bgp group to_int family inet6 unicast accept-srv6-service
-set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:3
-set routing-options resolution preserve-nexthop-hierarchy
-set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
-set protocols bgp rfc6514-compliant-safi129
-set protocols bgp multipath list-nexthop
-
-
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
 
 ### PE12
 
 delete interface ge-0/0/0 unit 0
-
 set interfaces ge-0/0/0 flexible-vlan-tagging
 set interfaces ge-0/0/0 encapsulation flexible-ethernet-services
 set interfaces ge-0/0/0 unit 101 vlan-id 101
 set interfaces ge-0/0/0 unit 101 family inet address 192.168.255.3/31
 set interfaces ge-0/0/0 unit 101 family inet6 address fc00:dead:beef:ffff::3/127
 set routing-options autonomous-system 4200000001
-set routing-options forwarding-table export LB
-set policy-options policy-statement LB term 1 then load-balance per-flow
-set policy-options policy-statement LB term 1 then accept
 set protocols bgp group to_ce neighbor 192.168.255.2 peer-as 4200001002
 set protocols bgp group to_ce neighbor fc00:dead:beef:ffff::2 peer-as 4200001002
-
-
-
-
 set policy-options policy-statement to_int term 1 then next-hop self
 set policy-options policy-statement to_int term 1 then accept
 set protocols bgp group to_int type internal
@@ -138,7 +50,95 @@ set protocols bgp group to_int family inet unicast advertise-srv6-service
 set protocols bgp group to_int family inet unicast accept-srv6-service
 set protocols bgp group to_int family inet6 unicast advertise-srv6-service
 set protocols bgp group to_int family inet6 unicast accept-srv6-service
-set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:3
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set routing-options resolution preserve-nexthop-hierarchy
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+
+
+
+
+### PE13
+
+delete interface ge-0/0/0 unit 0
+set interfaces ge-0/0/0 flexible-vlan-tagging
+set interfaces ge-0/0/0 encapsulation flexible-ethernet-services
+set interfaces ge-0/0/0 unit 101 vlan-id 101
+set interfaces ge-0/0/0 unit 101 family inet address 192.168.255.5/31
+set interfaces ge-0/0/0 unit 101 family inet6 address fc00:dead:beef:ffff::5/127
+set routing-options autonomous-system 4200000001
+set protocols bgp group to_ce neighbor 192.168.255.4 peer-as 4200001003
+set protocols bgp group to_ce neighbor fc00:dead:beef:ffff::4 peer-as 4200001003
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:13
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int family inet6 unicast advertise-srv6-service
+set protocols bgp group to_int family inet6 unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set routing-options resolution preserve-nexthop-hierarchy
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+
+### PE14
+
+delete interface ge-0/0/0 unit 0
+set interfaces ge-0/0/0 flexible-vlan-tagging
+set interfaces ge-0/0/0 encapsulation flexible-ethernet-services
+set interfaces ge-0/0/0 unit 101 vlan-id 101
+set interfaces ge-0/0/0 unit 101 family inet address 192.168.255.7/31
+set interfaces ge-0/0/0 unit 101 family inet6 address fc00:dead:beef:ffff::7/127
+set routing-options autonomous-system 4200000001
+set protocols bgp group to_ce neighbor 192.168.255.6 peer-as 4200001004
+set protocols bgp group to_ce neighbor fc00:dead:beef:ffff::6 peer-as 4200001004
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:14
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int family inet6 unicast advertise-srv6-service
+set protocols bgp group to_int family inet6 unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set routing-options resolution preserve-nexthop-hierarchy
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+
+
+### PE15
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+set routing-options autonomous-system 4200000001
+set routing-options static route 0.0.0.0/0 next-hop 172.16.11.254
+set policy-options policy-statement to_int term 1 from protocol static
+set policy-options policy-statement to_int term 1 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set policy-options policy-statement to_int term default then reject
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:15
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int family inet6 unicast advertise-srv6-service
+set protocols bgp group to_int family inet6 unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
 set routing-options resolution preserve-nexthop-hierarchy
 set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
 set protocols bgp rfc6514-compliant-safi129
@@ -146,24 +146,156 @@ set protocols bgp multipath list-nexthop
 
 
 
-### P3 
+### RR 
+set interfaces lo0 unit 0 family inet6 address fc00:dead:beef:ffff::ffff:20/128
+set interfaces lo0 unit 0 family iso address 49.0001.1921.6800.0020.00
+set routing-options source-packet-routing srv6 locator SRV6-LOC-1 fc00:dead:beef:ff20::/64
+set routing-options router-id 192.168.255.200
+set routing-options autonomous-system 4200000001
 set protocols bgp group to_int type internal
-set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:3
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:20
 set protocols bgp group to_int family inet unicast extended-nexthop
 set protocols bgp group to_int family inet unicast advertise-srv6-service
 set protocols bgp group to_int family inet unicast accept-srv6-service
-set protocols bgp group to_int family inet6 unicast advertise-srv6-service 
+set protocols bgp group to_int family inet6 unicast advertise-srv6-service
 set protocols bgp group to_int family inet6 unicast accept-srv6-service
-set protocols bgp group to_int family evpn signaling accept-srv6-service
 set protocols bgp group to_int family evpn signaling advertise-srv6-service
-set protocols bgp group to_int cluster 192.168.255.3
+set protocols bgp group to_int family evpn signaling accept-srv6-service
+set protocols bgp group to_int cluster 192.168.255.200
 set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:11
 set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:14
 set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:12
 set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:13
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:15
+set protocols isis interface eth1 level 1 disable
+set protocols isis interface eth1 point-to-point
+set protocols isis interface lo0.0 level 1 disable
+set protocols isis interface lo0.0 passive
+set protocols isis source-packet-routing srv6 locator SRV6-LOC-1 end-sid fc00:dead:beef:ff20::
+
+set protocols bgp group to_int1 type internal
+set protocols bgp group to_int1 local-address fc00:dead:beef:ffff::ffff:20
+set protocols bgp group to_int1 family inet unicast extended-nexthop
+set protocols bgp group to_int1 family inet unicast advertise-srv6-service
+set protocols bgp group to_int1 family inet unicast accept-srv6-service
+set protocols bgp group to_int1 cluster 192.168.255.200
+set protocols bgp group to_int1 neighbor fc00:dead:beef:ffff::ffff:1
+set protocols bgp group to_int1 neighbor fc00:dead:beef:ffff::ffff:2
+set protocols bgp group to_int1 neighbor fc00:dead:beef:ffff::ffff:3
+set protocols bgp group to_int1 neighbor fc00:dead:beef:ffff::ffff:4
+set protocols bgp group to_int1 neighbor fc00:dead:beef:ffff::ffff:5
+set protocols bgp group to_int1 export to_int
+set policy-options policy-statement to_int term 1 from route-filter 0.0.0.0/0 exact
+set policy-options policy-statement to_int term 1 then accept
+set policy-options policy-statement to_int term 2 from route-filter 192.168.255.0/24 orlonger
+set policy-options policy-statement to_int term 2 then accept
+set policy-options policy-statement to_int term default then reject
+
+### P1
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
 set routing-options autonomous-system 4200000001
+set policy-options policy-statement to_int term 1 from protocol direct
+set policy-options policy-statement to_int term 1 from route-filter 192.168.255.0/24 orlonger
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set policy-options policy-statement to_int term default then reject
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:1
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set routing-options resolution preserve-nexthop-hierarchy
+
+### P2
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+set routing-options autonomous-system 4200000001
+set policy-options policy-statement to_int term 1 from protocol direct
+set policy-options policy-statement to_int term 1 from route-filter 192.168.255.0/24 orlonger
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set policy-options policy-statement to_int term default then reject
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:2
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set routing-options resolution preserve-nexthop-hierarchy
+
+### P3
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+set routing-options autonomous-system 4200000001
+set policy-options policy-statement to_int term 1 from protocol direct
+set policy-options policy-statement to_int term 1 from route-filter 192.168.255.0/24 orlonger
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set policy-options policy-statement to_int term default then reject
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:3
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set routing-options resolution preserve-nexthop-hierarchy
+
+### P4
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+set routing-options autonomous-system 4200000001
+set policy-options policy-statement to_int term 1 from protocol direct
+set policy-options policy-statement to_int term 1 from route-filter 192.168.255.0/24 orlonger
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set policy-options policy-statement to_int term default then reject
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:4
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set routing-options resolution preserve-nexthop-hierarchy
 
 
+### P5
+set system name-server 10.49.32.95
+set system name-server 10.49.32.97
+set routing-options autonomous-system 4200000001
+set policy-options policy-statement to_int term 1 from protocol direct
+set policy-options policy-statement to_int term 1 from route-filter 192.168.255.0/24 orlonger
+set policy-options policy-statement to_int term 1 then next-hop self
+set policy-options policy-statement to_int term 1 then accept
+set policy-options policy-statement to_int term default then reject
+set protocols bgp group to_int type internal
+set protocols bgp group to_int export to_int
+set protocols bgp group to_int local-address fc00:dead:beef:ffff::ffff:5
+set protocols bgp group to_int family inet unicast extended-nexthop
+set protocols bgp group to_int family inet unicast advertise-srv6-service
+set protocols bgp group to_int family inet unicast accept-srv6-service
+set protocols bgp group to_int neighbor fc00:dead:beef:ffff::ffff:20
+set protocols bgp source-packet-routing srv6 locator SRV6-LOC-1 end-dt46-sid
+set protocols bgp rfc6514-compliant-safi129
+set protocols bgp multipath list-nexthop
+set routing-options resolution preserve-nexthop-hierarchy
 
 ## EVPN type 5 over SRv6
 
@@ -190,8 +322,6 @@ set routing-instances VRF1 vrf-target target:65412:1001
 
 set protocols bgp group to_int family evpn signaling accept-srv6-service
 set protocols bgp group to_int family evpn signaling advertise-srv6-service
-
-
 set routing-instances VRF1 vrf-table-label
 
 
@@ -218,8 +348,6 @@ set routing-instances VRF1 vrf-target target:65412:1001
 
 set protocols bgp group to_int family evpn signaling accept-srv6-service
 set protocols bgp group to_int family evpn signaling advertise-srv6-service
-
-
 set routing-instances VRF1 vrf-table-label
 
 

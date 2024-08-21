@@ -6,7 +6,7 @@
     - juniper.junos
   vars:
     username: admin
-    backup_dir: "./backup"
+    backup_dir: "./backup_lab4"
     conf_file: "{{ backup_dir }}/{{ inventory_hostname }}.set"
   connection: local
   gather_facts: no

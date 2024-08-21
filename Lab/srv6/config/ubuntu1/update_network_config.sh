@@ -58,7 +58,15 @@ EOF
 
 sudo netplan apply
 
+cat << EOF | tee set_bridge.sh
+#!/bin/bash
 for i in s{1..4}ce{1..3}eth1
 do
-   sudo sysctl -w "net.ipv6.conf.${i}.disable_ipv6=1"
+   sudo sysctl -w "net.ipv6.conf.\${i}.disable_ipv6=1"
 done
+EOF
+
+chmod +x set_bridge.sh
+./set_bridge.sh
+
+

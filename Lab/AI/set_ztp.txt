@@ -77,7 +77,7 @@ docker restart dhcpd
 
 Apstra flow configuration
 
-cat << EOF  | sudo tee /etc/netplan/01_net.yaml
+cat << EOF  | sudo tee /etc/netplan/01-netcfg.yaml
 network:
     version: 2
     # renderer: networkd

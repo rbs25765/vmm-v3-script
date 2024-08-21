@@ -8,7 +8,7 @@ do
 done 
 
 # changing LXC container configuration, node router
-VLAN=104
+VLAN=111
 for i in {2..4}
 do
 OVS=ovs${i}
@@ -31,6 +31,7 @@ lxc query --request PATCH /1.0/instances/s${i}ce3 --data "{
     }
   }
 }"
+VLAN=$(($VLAN + 1))
 done
 echo "changing container s1ce3"
 lxc query --request PATCH /1.0/instances/s1ce3 --data "{
@@ -235,4 +236,10 @@ done
 
 lxc start s{1..4}ce3
 lxc start s{1..4}ce3c1
+
+
+# lxc stop s{1..4}ce3
+# lxc stop s{1..4}ce3c1
+# lxc rm s{1..4}ce3
+# lxc rm s{1..4}ce3c1
 
